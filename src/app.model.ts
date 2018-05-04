@@ -8,6 +8,14 @@ export enum METHOD_TYPE {
   SLIDE_UP = 'slideUp',
 }
 
+export enum SLIDE_TIMING {
+  EASE = 'ease',
+  LINEAR = 'linear',
+  EASE_IN = 'ease-in',
+  EASE_OUT = 'ease-out',
+  EASE_IN_OUT = 'ease-in-out',
+}
+
 export interface Option {
   headerBarHeight?: number;
   headerBarWidth?: string;
@@ -16,13 +24,13 @@ export interface Option {
   boxShadow?: string;
   opacity?: number;
   slidePoint?: number;
-  slideDownSpeed: string;
-  slideUpSpeed: string;
-  slideDownEasing?: string;
-  slideUpEasing?: string;
+  slideDownDuration: string;
+  slideUpDuration: string;
+  slideDownTiming?: SLIDE_TIMING | string;
+  slideUpTiming?: SLIDE_TIMING | string;
   slideDownCallback?: () => any;
   slideUpCallback?: () => any;
-  shouldCloneHeader?: boolean;
+  isCloneHeader?: boolean;
   isFullscreenView?: boolean;
   isHeadroom?: boolean;
 }

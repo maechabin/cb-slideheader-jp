@@ -1,4 +1,4 @@
-import { Option, SLIDE_TYPE, METHOD_TYPE } from './app.model';
+import { Option, SLIDE_TYPE, METHOD_TYPE, SLIDE_TIMING } from './app.model';
 
 export default class SlideHeader {
   element: Element;
@@ -19,27 +19,27 @@ export default class SlideHeader {
       boxShadow: 'none',
       opacity: 1,
       slidePoint: 0,
-      slideDownSpeed: '500ms',
-      slideUpSpeed: '500ms',
-      slideDownEasing: 'ease',
-      slideUpEasing: 'ease',
+      slideDownDuration: '500ms',
+      slideUpDuration: '500ms',
+      slideDownTiming: SLIDE_TIMING.EASE,
+      slideUpTiming: SLIDE_TIMING.EASE,
       slideDownCallback: () => {},
       slideUpCallback: () => {},
-      shouldCloneHeader: false,
+      isCloneHeader: false,
       isFullscreenView: false,
       isHeadroom: false,
     };
   }
 
   handleScroll(top: number | string, slideType: SLIDE_TYPE): void {
-    const slideSpeed = this.config[`slide${slideType}Speed`];
-    const slideEasing = this.config[`slide${slideType}Easing`];
+    const slideDuration = this.config[`slide${slideType}Duration`];
+    const slideTiming = this.config[`slide${slideType}Timing`];
 
     let frameId;
     cancelAnimationFrame(frameId);
     frameId = requestAnimationFrame(() => {
       this.element.setAttribute('style', `
-        transition: transform ${slideSpeed} ${slideEasing};
+        transition: transform ${slideDuration} ${slideTiming};
         transform: translate3d(0, ${top}, 0);
       `);
     });
@@ -139,7 +139,7 @@ export default class SlideHeader {
     let padding: number = null;
 
     if (windowHeight > headerHeight) {
-      if (this.config.shouldCloneHeader) {
+      if (this.config.isCloneHeader) {
         padding = (windowHeight - headerHeight) / 2;
       } else {
         padding = (windowHeight - headerHeight + headerBarHeight) / 2;
@@ -150,7 +150,7 @@ export default class SlideHeader {
         'padding-bottom': ${padding}px;
       `);
     } else {
-      if (this.config.shouldCloneHeader) {
+      if (this.config.isCloneHeader) {
         this.config.slidePoint = headerHeight;
       } else {
         this.config.slidePoint = headerHeight - headerBarHeight;
@@ -159,11 +159,11 @@ export default class SlideHeader {
   }
 
   init(type?: METHOD_TYPE): void {
-    if (type) {
+    if (type && (type in METHOD_TYPE)) {
       this.methodType = type;
     }
     this.config = Object.assign({}, this.defaults, this.options);
-    if (this.config.shouldCloneHeader) {
+    if (this.config.isCloneHeader) {
       this.cloneHeader();
     }
     this.applyStyle();
