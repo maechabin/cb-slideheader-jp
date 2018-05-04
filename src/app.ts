@@ -122,10 +122,9 @@ export default class SlideHeader {
   }
 
   cloneHeader(): void {
-    const clonedElement: Node = this.element.cloneNode(true);
-    clonedElement.insertBefore(this.element, null);
-    console.dir(clonedElement);
-    clonedElement.removeAttribute('class', 'cb-header');
+    const clonedElement = this.element.cloneNode(true) as HTMLElement;
+    this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
+    clonedElement.removeAttribute('class');
     clonedElement.setAttribute('class', 'cb-header1');
     clonedElement.setAttribute('style', `
       'z-index': 10000;
