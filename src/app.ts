@@ -174,4 +174,10 @@ export default class SlideHeader {
   }
 }
 
+declare global {
+  interface Window {
+    SlideHeader: any;
+  }
+}
+
 window.SlideHeader = SlideHeader;
