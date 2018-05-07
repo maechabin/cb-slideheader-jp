@@ -71,7 +71,7 @@ export default class SlideHeader {
     const css2 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? style2 : style1;
 
     window.addEventListener('scroll', () => {
-      currentScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      currentScrollTop = window.scrollY;
 
       if (this.methodType === METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
         /** Headroom時 */
@@ -159,7 +159,7 @@ export default class SlideHeader {
   }
 
   init(type?: METHOD_TYPE): void {
-    if (type && (type in METHOD_TYPE)) {
+    if (type && (type === METHOD_TYPE.SLIDE_UP || type === METHOD_TYPE.SLIDE_DOWN)) {
       this.methodType = type;
     }
     this.config = Object.assign({}, this.defaults, this.options);
