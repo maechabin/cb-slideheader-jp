@@ -1,6 +1,6 @@
 import { Option, SLIDE_TYPE, METHOD_TYPE, SLIDE_TIMING } from './app.model';
 
-export default class SlideHeader {
+export class SlideHeader {
   element: Element;
   methodType: METHOD_TYPE = METHOD_TYPE.SLIDE_DOWN;
   slideDirection: SLIDE_TYPE = SLIDE_TYPE.UP;
@@ -38,13 +38,16 @@ export default class SlideHeader {
     let frameId;
     cancelAnimationFrame(frameId);
     frameId = requestAnimationFrame(() => {
-      this.element.setAttribute('style', `
+      this.element.setAttribute(
+        'style',
+        `
         transition: transform ${slideDuration} ${slideTiming};
         transform: translate3d(0, ${top}, 0);
-      `);
+      `,
+      );
     });
 
-    this.slideDirection = (this.slideDirection === SLIDE_TYPE.UP) ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
+    this.slideDirection = this.slideDirection === SLIDE_TYPE.UP ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
   }
 
   handleTransitionend(slideType: SLIDE_TYPE, style: string): void {
@@ -53,10 +56,12 @@ export default class SlideHeader {
   }
 
   runSlideHeader(): void {
-    const top1 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? 0 : `-${this.config.headerBarHeight}px`;
-    const top2 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? `-${this.config.headerBarHeight}px` : 0;
-    const slideType1 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
-    const slideType2 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? SLIDE_TYPE.UP : SLIDE_TYPE.DOWN;
+    const top1 =
+      this.methodType === METHOD_TYPE.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
+    const top2 =
+      this.methodType === METHOD_TYPE.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
+    const slideType1 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
+    const slideType2 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? SLIDE_TYPE.UP : SLIDE_TYPE.DOWN;
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
@@ -67,58 +72,70 @@ export default class SlideHeader {
     const style2 = `
       box-shadow: none;
     `;
-    const css1 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? style1 : style2;
-    const css2 = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? style2 : style1;
+    const css1 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
+    const css2 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
 
-    window.addEventListener('scroll', () => {
-      currentScrollTop = window.scrollY;
+    window.addEventListener(
+      'scroll',
+      () => {
+        currentScrollTop = window.scrollY;
 
-      if (this.methodType === METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
-        /** Headroom時 */
-        if (currentScrollTop > startingScrollTop　&& currentScrollTop > this.config.slidePoint) {
-          if (this.slideDirection === SLIDE_TYPE.UP) {
-            this.handleScroll(top1, slideType1);
+        if (this.methodType === METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
+          /** Headroom時 */
+          if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
+            if (this.slideDirection === SLIDE_TYPE.UP) {
+              this.handleScroll(top1, slideType1);
+            }
+          } else {
+            if (this.slideDirection === SLIDE_TYPE.DOWN) {
+              this.handleScroll(top2, slideType2);
+            }
           }
+          startingScrollTop = currentScrollTop;
         } else {
-          if (this.slideDirection === SLIDE_TYPE.DOWN) {
-            this.handleScroll(top2, slideType2);
+          /** 通常時（Headroomじゃない時） */
+          if (currentScrollTop > this.config.slidePoint) {
+            /** スクロール位置がスライドポイントより大きくなった場合 */
+            if (this.slideDirection === SLIDE_TYPE.UP) {
+              this.handleScroll(top1, slideType1);
+            }
+          } else {
+            /** スクロール位置がスライドポイントより小さくなった場合 */
+            if (this.slideDirection === SLIDE_TYPE.DOWN) {
+              this.handleScroll(top2, slideType2);
+            }
           }
         }
-        startingScrollTop = currentScrollTop;
-      } else {
-        /** 通常時（Headroomじゃない時） */
-        if (currentScrollTop > this.config.slidePoint) {
-          /** スクロール位置がスライドポイントより大きくなった場合 */
-          if (this.slideDirection === SLIDE_TYPE.UP) {
-            this.handleScroll(top1, slideType1);
-          }
-        } else {
-          /** スクロール位置がスライドポイントより小さくなった場合 */
-          if (this.slideDirection === SLIDE_TYPE.DOWN) {
-            this.handleScroll(top2, slideType2);
-          }
-        }
-      }
-    }, false);
+      },
+      false,
+    );
 
-    window.addEventListener('transitionend', () => {
-      if (this.slideDirection === SLIDE_TYPE.UP) {
-        this.handleTransitionend(slideType1, css1);
-      } else {
-        this.handleTransitionend(slideType2, css2);
-      }
-    }, false);
+    window.addEventListener(
+      'transitionend',
+      () => {
+        if (this.slideDirection === SLIDE_TYPE.UP) {
+          this.handleTransitionend(slideType1, css1);
+        } else {
+          this.handleTransitionend(slideType2, css2);
+        }
+      },
+      false,
+    );
   }
 
   applyStyle(): void {
-    const top = (this.methodType === METHOD_TYPE.SLIDE_DOWN) ? `-${this.config.headerBarHeight}px` : 0;
-    this.element.setAttribute('style', `
+    const top =
+      this.methodType === METHOD_TYPE.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
+    this.element.setAttribute(
+      'style',
+      `
       transform: translate3d(0, ${top}, 0);
       visibility: 'visible';
       opacity: ${this.config.opacity};
       width: ${this.config.headerBarWidth};
       zIndex: ${this.config.zIndex};
-    `);
+    `,
+    );
   }
 
   cloneHeader(): void {
@@ -126,9 +143,12 @@ export default class SlideHeader {
     this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
     clonedElement.removeAttribute('class');
     clonedElement.setAttribute('class', 'cb-header1');
-    clonedElement.setAttribute('style', `
+    clonedElement.setAttribute(
+      'style',
+      `
       'z-index': 10000;
-    `);
+    `,
+    );
   }
 
   changeHeaderHeight(): void {
@@ -145,10 +165,13 @@ export default class SlideHeader {
         padding = (windowHeight - headerHeight + headerBarHeight) / 2;
       }
       this.config.slidePoint = windowHeight;
-      header2.setAttribute('style', `
+      header2.setAttribute(
+        'style',
+        `
         'padding-top': ${padding}px;
         'padding-bottom': ${padding}px;
-      `);
+      `,
+      );
     } else {
       if (this.config.isCloneHeader) {
         this.config.slidePoint = headerHeight;
@@ -174,6 +197,7 @@ export default class SlideHeader {
   }
 }
 
+/*
 declare global {
   interface Window {
     SlideHeader: any;
@@ -181,3 +205,4 @@ declare global {
 }
 
 window.SlideHeader = SlideHeader;
+*/

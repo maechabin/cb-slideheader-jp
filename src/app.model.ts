@@ -28,8 +28,8 @@ export interface Option {
   slideUpDuration: string;
   slideDownTiming?: SLIDE_TIMING | string;
   slideUpTiming?: SLIDE_TIMING | string;
-  slideDownCallback?: () => any;
-  slideUpCallback?: () => any;
+  slideDownCallback?: () => void;
+  slideUpCallback?: () => void;
   isCloneHeader?: boolean;
   isFullscreenView?: boolean;
   isHeadroom?: boolean;
