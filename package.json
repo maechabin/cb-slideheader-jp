@@ -5,10 +5,13 @@
   "keywords": "jquery-plugin",
   "main": "./dist/jquery.cbslideheader.min.js",
   "style": "./dist/cbslideheader.css",
+  "main": "./dist/slideheader.min.js",
   "scripts": {
-    "test": "gulp test",
-    "watch": "watchify -t babelify ./src/app.js -o ./dist/jquery.cbslideheader.js",
-    "build": "browserify -t babelify ./src/app.js | uglifyjs -c warnings=false > ./dist/jquery.cbslideheader.min.js"
+    "build": "parcel build ./src/app.ts --global slideheader --no-minify --out-file slideheader.js",
+    "build:min": "parcel build ./src/app.ts --global slideheader --out-file slideheader.min.js",
+    "test:jquery": "gulp test",
+    "watch:jquery": "watchify -t babelify ./src/jquery/app.js -o ./dist/jquery/jquery.cbslideheader.js",
+    "build:jquery": "browserify -t babelify ./src/jquery/app.js | uglifyjs -c warnings=false > ./dist/jquery/jquery.cbslideheader.min.js"
   },
   "repository": {
     "type": "git",
