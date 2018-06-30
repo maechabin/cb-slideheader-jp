@@ -1,10 +1,15 @@
 <!doctype html>
 
 <html>
+
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="../dist/cbslideheader.css">
+  <style>
+    .cb-header {
+      position: fixed;
+    }
+  </style>
 </head>
 
 <body>
@@ -12,10 +17,16 @@
   <div style="background-color: #eee;" class="cb-header2"></div>
   <div style="height: 4000px"></div>
 
-  <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="../dist/jquery.cbslideheader.min.js"></script>
+  <script src="../dist/slideheader.js"></script>
   <script>
-  $(".header").cbSlideDownHeader();
+    console.log(slideheader);
+
+    window.onload = () => {
+      new SlideHeader('.cb-header', {
+        isHeadroom: true,
+        slidePoint: 64,
+      }).init('slideUp');
+    }
   </script>
 </body>
 
