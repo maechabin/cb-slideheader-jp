@@ -1,14 +1,14 @@
-import { Option, SLIDE_TYPE, METHOD_TYPE, SLIDE_TIMING } from './app.model';
+import { SlideHeaderModel } from './app.model';
 
 export class SlideHeader {
   element: Element;
-  methodType: METHOD_TYPE = METHOD_TYPE.SLIDE_DOWN;
-  slideDirection: SLIDE_TYPE = SLIDE_TYPE.UP;
-  config: Option;
-  options: Option;
-  defaults: Option;
+  methodType: SlideHeaderModel.METHOD_TYPE = SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
+  slideDirection: SlideHeaderModel.SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE.UP;
+  config: SlideHeaderModel.Option;
+  options: SlideHeaderModel.Option;
+  defaults: SlideHeaderModel.Option;
 
-  constructor(element: string, options: Option) {
+  constructor(element: string, options: SlideHeaderModel.Option) {
     this.element = document.querySelector(element);
     this.options = options;
     this.defaults = {
@@ -21,8 +21,8 @@ export class SlideHeader {
       slidePoint: 0,
       slideDownDuration: '500ms',
       slideUpDuration: '500ms',
-      slideDownTiming: SLIDE_TIMING.EASE,
-      slideUpTiming: SLIDE_TIMING.EASE,
+      slideDownTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
+      slideUpTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
       slideDownCallback: () => {},
       slideUpCallback: () => {},
       isCloneHeader: false,
@@ -31,7 +31,7 @@ export class SlideHeader {
     };
   }
 
-  handleScroll(top: number | string, slideType: SLIDE_TYPE): void {
+  handleScroll(top: number | string, slideType: SlideHeaderModel.SLIDE_TYPE): void {
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
@@ -47,21 +47,34 @@ export class SlideHeader {
       );
     });
 
-    this.slideDirection = this.slideDirection === SLIDE_TYPE.UP ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
+    this.slideDirection =
+      this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP
+        ? SlideHeaderModel.SLIDE_TYPE.DOWN
+        : SlideHeaderModel.SLIDE_TYPE.UP;
   }
 
-  handleTransitionend(slideType: SLIDE_TYPE, style: string): void {
+  handleTransitionend(slideType: SlideHeaderModel.SLIDE_TYPE, style: string): void {
     this.config[`slide${slideType}Callback`];
     //this.element.setAttribute('style', style);
   }
 
   runSlideHeader(): void {
     const top1 =
-      this.methodType === METHOD_TYPE.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
+      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        ? 0
+        : `-${this.config.headerBarHeight}px`;
     const top2 =
-      this.methodType === METHOD_TYPE.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
-    const slideType1 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? SLIDE_TYPE.DOWN : SLIDE_TYPE.UP;
-    const slideType2 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? SLIDE_TYPE.UP : SLIDE_TYPE.DOWN;
+      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        ? `-${this.config.headerBarHeight}px`
+        : 0;
+    const slideType1 =
+      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        ? SlideHeaderModel.SLIDE_TYPE.DOWN
+        : SlideHeaderModel.SLIDE_TYPE.UP;
+    const slideType2 =
+      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        ? SlideHeaderModel.SLIDE_TYPE.UP
+        : SlideHeaderModel.SLIDE_TYPE.DOWN;
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
@@ -72,22 +85,22 @@ export class SlideHeader {
     const style2 = `
       box-shadow: none;
     `;
-    const css1 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
-    const css2 = this.methodType === METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
+    const css1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
+    const css2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
 
     window.addEventListener(
       'scroll',
       () => {
         currentScrollTop = window.scrollY;
 
-        if (this.methodType === METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
+        if (this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
           /** Headroom時 */
           if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
-            if (this.slideDirection === SLIDE_TYPE.UP) {
+            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
               this.handleScroll(top1, slideType1);
             }
           } else {
-            if (this.slideDirection === SLIDE_TYPE.DOWN) {
+            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
               this.handleScroll(top2, slideType2);
             }
           }
@@ -96,12 +109,12 @@ export class SlideHeader {
           /** 通常時（Headroomじゃない時） */
           if (currentScrollTop > this.config.slidePoint) {
             /** スクロール位置がスライドポイントより大きくなった場合 */
-            if (this.slideDirection === SLIDE_TYPE.UP) {
+            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
               this.handleScroll(top1, slideType1);
             }
           } else {
             /** スクロール位置がスライドポイントより小さくなった場合 */
-            if (this.slideDirection === SLIDE_TYPE.DOWN) {
+            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
               this.handleScroll(top2, slideType2);
             }
           }
@@ -113,7 +126,7 @@ export class SlideHeader {
     window.addEventListener(
       'transitionend',
       () => {
-        if (this.slideDirection === SLIDE_TYPE.UP) {
+        if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
           this.handleTransitionend(slideType1, css1);
         } else {
           this.handleTransitionend(slideType2, css2);
@@ -125,7 +138,9 @@ export class SlideHeader {
 
   applyStyle(): void {
     const top =
-      this.methodType === METHOD_TYPE.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
+      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        ? `-${this.config.headerBarHeight}px`
+        : 0;
     this.element.setAttribute(
       'style',
       `
@@ -181,8 +196,12 @@ export class SlideHeader {
     }
   }
 
-  init(type?: METHOD_TYPE): void {
-    if (type && (type === METHOD_TYPE.SLIDE_UP || type === METHOD_TYPE.SLIDE_DOWN)) {
+  init(type?: SlideHeaderModel.METHOD_TYPE): void {
+    if (
+      type &&
+      (type === SlideHeaderModel.METHOD_TYPE.SLIDE_UP ||
+        type === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)
+    ) {
       this.methodType = type;
     }
     this.config = Object.assign({}, this.defaults, this.options);
