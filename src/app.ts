@@ -216,7 +216,6 @@ export class SlideHeader {
   }
 }
 
-/*
 declare global {
   interface Window {
     SlideHeader: any;
@@ -224,4 +223,3 @@ declare global {
 }
 
 window.SlideHeader = SlideHeader;
-*/
