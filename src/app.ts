@@ -41,9 +41,9 @@ export class SlideHeader {
       this.element.setAttribute(
         'style',
         `
-        transition: transform ${slideDuration} ${slideTiming};
-        transform: translate3d(0, ${top}, 0);
-      `,
+          transition: transform ${slideDuration} ${slideTiming};
+          transform: translate3d(0, ${top}, 0);
+        `,
       );
     });
 
@@ -144,12 +144,12 @@ export class SlideHeader {
     this.element.setAttribute(
       'style',
       `
-      transform: translate3d(0, ${top}, 0);
-      visibility: 'visible';
-      opacity: ${this.config.opacity};
-      width: ${this.config.headerBarWidth};
-      zIndex: ${this.config.zIndex};
-    `,
+        transform: translate3d(0, ${top}, 0);
+        visibility: 'visible';
+        opacity: ${this.config.opacity};
+        width: ${this.config.headerBarWidth};
+        zIndex: ${this.config.zIndex};
+      `,
     );
   }
 
@@ -161,8 +161,8 @@ export class SlideHeader {
     clonedElement.setAttribute(
       'style',
       `
-      'z-index': 10000;
-    `,
+        'z-index': 10000;
+      `,
     );
   }
 
@@ -183,9 +183,9 @@ export class SlideHeader {
       header2.setAttribute(
         'style',
         `
-        'padding-top': ${padding}px;
-        'padding-bottom': ${padding}px;
-      `,
+          'padding-top': ${padding}px;
+          'padding-bottom': ${padding}px;
+        `,
       );
     } else {
       if (this.config.isCloneHeader) {
