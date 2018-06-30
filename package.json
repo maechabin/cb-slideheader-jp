@@ -1,10 +1,10 @@
 {
-  "name": "cbslideheader",
-  "version": "0.4.0",
-  "description": "A jQuery plugin to display or hide headerbar with a sliding motion",
-  "keywords": "jquery-plugin",
-  "main": "./dist/jquery.cbslideheader.min.js",
-  "style": "./dist/cbslideheader.css",
+  "name": "slideheader",
+  "version": "0.9.0",
+  "description": "A JavaScript plugin to display or hide headerbar with a sliding motion",
+  "keywords": [
+    "javascript"
+  ],
   "main": "./dist/slideheader.min.js",
   "scripts": {
     "build": "parcel build ./src/app.ts --global slideheader --no-minify --out-file slideheader.js",
@@ -15,15 +15,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:maechabin/jquery.cb-slideheader.js.git"
+    "url": "git@github.com:maechabin/slideheader.git"
   },
-  "author": "maechabin <mail@chab.in> http://mae.chab.in/",
+  "author": "@maechabin <mail@chab.in> https://mae.chab.in/",
   "license": "MIT license",
   "browserify-shim": {
     "jquery": "global:$"
   },
   "browser": {
-    "SlideHeader": "./src/SlideHeader.js"
+    "SlideHeader": "./src/SlideHeader.min.js"
   },
   "browserify": {
     "transform": [
@@ -55,7 +55,7 @@
     "jquery": "^1.11.2"
   },
   "bugs": {
-    "url": "https://github.com/maechabin/jquery.cb-slideheader.js/issues"
+    "url": "https://github.com/maechabin/slideheader/issues"
   },
-  "homepage": "https://github.com/maechabin/jquery.cb-slideheader.js"
+  "homepage": "https://github.com/maechabin/slideheader"
 }
