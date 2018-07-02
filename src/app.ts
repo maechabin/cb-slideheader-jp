@@ -1,4 +1,4 @@
-import { SlideHeaderModel } from './app.model';
+/// <reference path="app.model.ts" />
 
 export class SlideHeader {
   element: Element;
@@ -204,7 +204,7 @@ export class SlideHeader {
     ) {
       this.methodType = type;
     }
-    this.config = Object.assign({}, this.defaults, this.options);
+    this.config = (<any>Object).assign({}, this.defaults, this.options);
     if (this.config.isCloneHeader) {
       this.cloneHeader();
     }

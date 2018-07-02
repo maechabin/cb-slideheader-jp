@@ -1,4 +1,4 @@
-export namespace SlideHeaderModel {
+namespace SlideHeaderModel {
   export enum SLIDE_TYPE {
     UP = 'Up',
     DOWN = 'Down',

@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["./typings"]
+  },
+  "files": ["./src/app.ts"],
+  "include": ["src/**/*"]
+}
