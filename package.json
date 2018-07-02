@@ -1,11 +1,11 @@
 {
   "name": "slideheader",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "A JavaScript plugin to display or hide headerbar with a sliding motion",
   "keywords": [
     "javascript"
   ],
-  "main": "./dist/slideheader.min.js",
+  "main": "./dist/app.js",
   "scripts": {
     "build": "parcel build ./src/app.ts --global slideheader --no-minify --out-file slideheader.js",
     "build:min": "parcel build ./src/app.ts --global slideheader --out-file slideheader.min.js",
