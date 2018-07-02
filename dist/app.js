@@ -1,32 +1,35 @@
-var SlideHeaderModel;
-(function (SlideHeaderModel) {
-    var SLIDE_TYPE;
-    (function (SLIDE_TYPE) {
-        SLIDE_TYPE["UP"] = "Up";
-        SLIDE_TYPE["DOWN"] = "Down";
-    })(SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE || (SlideHeaderModel.SLIDE_TYPE = {}));
-    var METHOD_TYPE;
-    (function (METHOD_TYPE) {
-        METHOD_TYPE["SLIDE_DOWN"] = "slideDown";
-        METHOD_TYPE["SLIDE_UP"] = "slideUp";
-    })(METHOD_TYPE = SlideHeaderModel.METHOD_TYPE || (SlideHeaderModel.METHOD_TYPE = {}));
-    var SLIDE_TIMING;
-    (function (SLIDE_TIMING) {
-        SLIDE_TIMING["EASE"] = "ease";
-        SLIDE_TIMING["LINEAR"] = "linear";
-        SLIDE_TIMING["EASE_IN"] = "ease-in";
-        SLIDE_TIMING["EASE_OUT"] = "ease-out";
-        SLIDE_TIMING["EASE_IN_OUT"] = "ease-in-out";
-    })(SLIDE_TIMING = SlideHeaderModel.SLIDE_TIMING || (SlideHeaderModel.SLIDE_TIMING = {}));
-})(SlideHeaderModel || (SlideHeaderModel = {}));
-/// <reference path="app.model.ts" />
-define("app", ["require", "exports"], function (require, exports) {
+define("app.model", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.__esModule = true;
+    var SlideHeaderModel;
+    (function (SlideHeaderModel) {
+        var SLIDE_TYPE;
+        (function (SLIDE_TYPE) {
+            SLIDE_TYPE["UP"] = "Up";
+            SLIDE_TYPE["DOWN"] = "Down";
+        })(SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE || (SlideHeaderModel.SLIDE_TYPE = {}));
+        var METHOD_TYPE;
+        (function (METHOD_TYPE) {
+            METHOD_TYPE["SLIDE_DOWN"] = "slideDown";
+            METHOD_TYPE["SLIDE_UP"] = "slideUp";
+        })(METHOD_TYPE = SlideHeaderModel.METHOD_TYPE || (SlideHeaderModel.METHOD_TYPE = {}));
+        var SLIDE_TIMING;
+        (function (SLIDE_TIMING) {
+            SLIDE_TIMING["EASE"] = "ease";
+            SLIDE_TIMING["LINEAR"] = "linear";
+            SLIDE_TIMING["EASE_IN"] = "ease-in";
+            SLIDE_TIMING["EASE_OUT"] = "ease-out";
+            SLIDE_TIMING["EASE_IN_OUT"] = "ease-in-out";
+        })(SLIDE_TIMING = SlideHeaderModel.SLIDE_TIMING || (SlideHeaderModel.SLIDE_TIMING = {}));
+    })(SlideHeaderModel = exports.SlideHeaderModel || (exports.SlideHeaderModel = {}));
+});
+define("app", ["require", "exports", "app.model"], function (require, exports, app_model_1) {
     "use strict";
     exports.__esModule = true;
     var SlideHeader = /** @class */ (function () {
         function SlideHeader(element, options) {
-            this.methodType = SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
-            this.slideDirection = SlideHeaderModel.SLIDE_TYPE.UP;
+            this.methodType = app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
+            this.slideDirection = app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
             this.element = document.querySelector(element);
             this.options = options;
             this.defaults = {
@@ -39,8 +42,8 @@ define("app", ["require", "exports"], function (require, exports) {
                 slidePoint: 0,
                 slideDownDuration: '500ms',
                 slideUpDuration: '500ms',
-                slideDownTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
-                slideUpTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
+                slideDownTiming: app_model_1.SlideHeaderModel.SLIDE_TIMING.EASE,
+                slideUpTiming: app_model_1.SlideHeaderModel.SLIDE_TIMING.EASE,
                 slideDownCallback: function () { },
                 slideUpCallback: function () { },
                 isCloneHeader: false,
@@ -58,9 +61,9 @@ define("app", ["require", "exports"], function (require, exports) {
                 _this.element.setAttribute('style', "\n          transition: transform " + slideDuration + " " + slideTiming + ";\n          transform: translate3d(0, " + top + ", 0);\n        ");
             });
             this.slideDirection =
-                this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP
-                    ? SlideHeaderModel.SLIDE_TYPE.DOWN
-                    : SlideHeaderModel.SLIDE_TYPE.UP;
+                this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP
+                    ? app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN
+                    : app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
         };
         SlideHeader.prototype.handleTransitionend = function (slideType, style) {
             this.config["slide" + slideType + "Callback"];
@@ -68,35 +71,35 @@ define("app", ["require", "exports"], function (require, exports) {
         };
         SlideHeader.prototype.runSlideHeader = function () {
             var _this = this;
-            var top1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+            var top1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
                 ? 0
                 : "-" + this.config.headerBarHeight + "px";
-            var top2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+            var top2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
                 ? "-" + this.config.headerBarHeight + "px"
                 : 0;
-            var slideType1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-                ? SlideHeaderModel.SLIDE_TYPE.DOWN
-                : SlideHeaderModel.SLIDE_TYPE.UP;
-            var slideType2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-                ? SlideHeaderModel.SLIDE_TYPE.UP
-                : SlideHeaderModel.SLIDE_TYPE.DOWN;
+            var slideType1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+                ? app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN
+                : app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
+            var slideType2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+                ? app_model_1.SlideHeaderModel.SLIDE_TYPE.UP
+                : app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN;
             var startingScrollTop = 0; // スライドの開始位置
             var currentScrollTop = 0; // 現在のスクロールの位置
             var style1 = "\n      box-shadow: " + this.config.boxShadow + ";\n      transition: 'box-shadow .9s linear',\n    ";
             var style2 = "\n      box-shadow: none;\n    ";
-            var css1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
-            var css2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
+            var css1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
+            var css2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
             window.addEventListener('scroll', function () {
                 currentScrollTop = window.scrollY;
-                if (_this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.isHeadroom) {
+                if (_this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.isHeadroom) {
                     /** Headroom時 */
                     if (currentScrollTop > startingScrollTop && currentScrollTop > _this.config.slidePoint) {
-                        if (_this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
+                        if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                             _this.handleScroll(top1, slideType1);
                         }
                     }
                     else {
-                        if (_this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
+                        if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
                             _this.handleScroll(top2, slideType2);
                         }
                     }
@@ -106,20 +109,20 @@ define("app", ["require", "exports"], function (require, exports) {
                     /** 通常時（Headroomじゃない時） */
                     if (currentScrollTop > _this.config.slidePoint) {
                         /** スクロール位置がスライドポイントより大きくなった場合 */
-                        if (_this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
+                        if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                             _this.handleScroll(top1, slideType1);
                         }
                     }
                     else {
                         /** スクロール位置がスライドポイントより小さくなった場合 */
-                        if (_this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
+                        if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
                             _this.handleScroll(top2, slideType2);
                         }
                     }
                 }
             }, false);
             window.addEventListener('transitionend', function () {
-                if (_this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
+                if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                     _this.handleTransitionend(slideType1, css1);
                 }
                 else {
@@ -128,7 +131,7 @@ define("app", ["require", "exports"], function (require, exports) {
             }, false);
         };
         SlideHeader.prototype.applyStyle = function () {
-            var top = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+            var top = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
                 ? "-" + this.config.headerBarHeight + "px"
                 : 0;
             this.element.setAttribute('style', "\n        transform: translate3d(0, " + top + ", 0);\n        visibility: 'visible';\n        opacity: " + this.config.opacity + ";\n        width: " + this.config.headerBarWidth + ";\n        zIndex: " + this.config.zIndex + ";\n      ");
@@ -167,8 +170,8 @@ define("app", ["require", "exports"], function (require, exports) {
         };
         SlideHeader.prototype.init = function (type) {
             if (type &&
-                (type === SlideHeaderModel.METHOD_TYPE.SLIDE_UP ||
-                    type === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)) {
+                (type === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP ||
+                    type === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)) {
                 this.methodType = type;
             }
             this.config = Object.assign({}, this.defaults, this.options);

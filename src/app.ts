@@ -1,4 +1,4 @@
-/// <reference path="app.model.ts" />
+import { SlideHeaderModel } from './app.model';
 
 export class SlideHeader {
   element: Element;
