@@ -47,7 +47,7 @@
     "jquery": "^1.12.4",
     "parcel-bundler": "^1.8.1",
     "qunitjs": "^1.18.0",
-    "typescript": "^2.8.3",
+    "typescript": "^2.9.2",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.9.0"
   },
