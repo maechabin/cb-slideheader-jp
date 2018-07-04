@@ -9,7 +9,7 @@
     "outDir": "./dist",
     "sourceMap": false,
     "strictNullChecks": false,
-    "target": "es6"
+    "target": "es5"
   },
   "compileOnSave": true,
   "include": ["src/**/*.ts"]
