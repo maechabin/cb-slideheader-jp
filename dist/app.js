@@ -1,8 +1,8 @@
 "use strict";
-exports.__esModule = true;
-var app_model_1 = require("./app.model");
-var SlideHeader = /** @class */ (function () {
-    function SlideHeader(element, options) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const app_model_1 = require("./app.model");
+class SlideHeader {
+    constructor(element, options) {
         this.methodType = app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
         this.slideDirection = app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
         this.element = document.querySelector(element);
@@ -19,111 +19,120 @@ var SlideHeader = /** @class */ (function () {
             slideUpDuration: '500ms',
             slideDownTiming: app_model_1.SlideHeaderModel.SLIDE_TIMING.EASE,
             slideUpTiming: app_model_1.SlideHeaderModel.SLIDE_TIMING.EASE,
-            slideDownCallback: function () { },
-            slideUpCallback: function () { },
+            slideDownCallback: () => { },
+            slideUpCallback: () => { },
             isCloneHeader: false,
             isFullscreenView: false,
-            isHeadroom: false
+            isHeadroom: false,
         };
     }
-    SlideHeader.prototype.handleScroll = function (top, slideType) {
-        var _this = this;
-        var slideDuration = this.config["slide" + slideType + "Duration"];
-        var slideTiming = this.config["slide" + slideType + "Timing"];
-        var frameId;
+    handleScroll(top, slideType) {
+        const slideDuration = this.config[`slide${slideType}Duration`];
+        const slideTiming = this.config[`slide${slideType}Timing`];
+        let frameId;
         cancelAnimationFrame(frameId);
-        frameId = requestAnimationFrame(function () {
-            _this.element.setAttribute('style', "\n          transition: transform " + slideDuration + " " + slideTiming + ";\n          transform: translate3d(0, " + top + ", 0);\n        ");
+        frameId = requestAnimationFrame(() => {
+            this.element.setAttribute('style', `
+          transition: transform ${slideDuration} ${slideTiming};
+          transform: translate3d(0, ${top}, 0);
+        `);
         });
         this.slideDirection =
             this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP
                 ? app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN
                 : app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
-    };
-    SlideHeader.prototype.handleTransitionend = function (slideType, style) {
-        this.config["slide" + slideType + "Callback"];
-        //this.element.setAttribute('style', style);
-    };
-    SlideHeader.prototype.runSlideHeader = function () {
-        var _this = this;
-        var top1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+    }
+    handleTransitionend(slideType, style) {
+        this.config[`slide${slideType}Callback`];
+    }
+    runSlideHeader() {
+        const top1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
             ? 0
-            : "-" + this.config.headerBarHeight + "px";
-        var top2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-            ? "-" + this.config.headerBarHeight + "px"
+            : `-${this.config.headerBarHeight}px`;
+        const top2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+            ? `-${this.config.headerBarHeight}px`
             : 0;
-        var slideType1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        const slideType1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
             ? app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN
             : app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
-        var slideType2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+        const slideType2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
             ? app_model_1.SlideHeaderModel.SLIDE_TYPE.UP
             : app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN;
-        var startingScrollTop = 0; // スライドの開始位置
-        var currentScrollTop = 0; // 現在のスクロールの位置
-        var style1 = "\n      box-shadow: " + this.config.boxShadow + ";\n      transition: 'box-shadow .9s linear',\n    ";
-        var style2 = "\n      box-shadow: none;\n    ";
-        var css1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
-        var css2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
-        window.addEventListener('scroll', function () {
+        let startingScrollTop = 0;
+        let currentScrollTop = 0;
+        const style1 = `
+      box-shadow: ${this.config.boxShadow};
+      transition: 'box-shadow .9s linear',
+    `;
+        const style2 = `
+      box-shadow: none;
+    `;
+        const css1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
+        const css2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
+        window.addEventListener('scroll', () => {
             currentScrollTop = window.scrollY;
-            if (_this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.isHeadroom) {
-                /** Headroom時 */
-                if (currentScrollTop > startingScrollTop && currentScrollTop > _this.config.slidePoint) {
-                    if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
-                        _this.handleScroll(top1, slideType1);
+            if (this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
+                if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
+                    if (this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
+                        this.handleScroll(top1, slideType1);
                     }
                 }
                 else {
-                    if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
-                        _this.handleScroll(top2, slideType2);
+                    if (this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
+                        this.handleScroll(top2, slideType2);
                     }
                 }
                 startingScrollTop = currentScrollTop;
             }
             else {
-                /** 通常時（Headroomじゃない時） */
-                if (currentScrollTop > _this.config.slidePoint) {
-                    /** スクロール位置がスライドポイントより大きくなった場合 */
-                    if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
-                        _this.handleScroll(top1, slideType1);
+                if (currentScrollTop > this.config.slidePoint) {
+                    if (this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
+                        this.handleScroll(top1, slideType1);
                     }
                 }
                 else {
-                    /** スクロール位置がスライドポイントより小さくなった場合 */
-                    if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
-                        _this.handleScroll(top2, slideType2);
+                    if (this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
+                        this.handleScroll(top2, slideType2);
                     }
                 }
             }
         }, false);
-        window.addEventListener('transitionend', function () {
-            if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
-                _this.handleTransitionend(slideType1, css1);
+        window.addEventListener('transitionend', () => {
+            if (this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
+                this.handleTransitionend(slideType1, css1);
             }
             else {
-                _this.handleTransitionend(slideType2, css2);
+                this.handleTransitionend(slideType2, css2);
             }
         }, false);
-    };
-    SlideHeader.prototype.applyStyle = function () {
-        var top = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-            ? "-" + this.config.headerBarHeight + "px"
+    }
+    applyStyle() {
+        const top = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
+            ? `-${this.config.headerBarHeight}px`
             : 0;
-        this.element.setAttribute('style', "\n        transform: translate3d(0, " + top + ", 0);\n        visibility: 'visible';\n        opacity: " + this.config.opacity + ";\n        width: " + this.config.headerBarWidth + ";\n        zIndex: " + this.config.zIndex + ";\n      ");
-    };
-    SlideHeader.prototype.cloneHeader = function () {
-        var clonedElement = this.element.cloneNode(true);
+        this.element.setAttribute('style', `
+        transform: translate3d(0, ${top}, 0);
+        visibility: 'visible';
+        opacity: ${this.config.opacity};
+        width: ${this.config.headerBarWidth};
+        zIndex: ${this.config.zIndex};
+      `);
+    }
+    cloneHeader() {
+        const clonedElement = this.element.cloneNode(true);
         this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
         clonedElement.removeAttribute('class');
         clonedElement.setAttribute('class', 'cb-header1');
-        clonedElement.setAttribute('style', "\n        'z-index': 10000;\n      ");
-    };
-    SlideHeader.prototype.changeHeaderHeight = function () {
-        var headerBarHeight = this.element.clientHeight;
-        var header2 = document.querySelector(this.config.header2SelectorName);
-        var headerHeight = headerBarHeight + header2.clientHeight;
-        var windowHeight = window.outerHeight;
-        var padding = null;
+        clonedElement.setAttribute('style', `
+        'z-index': 10000;
+      `);
+    }
+    changeHeaderHeight() {
+        const headerBarHeight = this.element.clientHeight;
+        const header2 = document.querySelector(this.config.header2SelectorName);
+        const headerHeight = headerBarHeight + header2.clientHeight;
+        const windowHeight = window.outerHeight;
+        let padding = null;
         if (windowHeight > headerHeight) {
             if (this.config.isCloneHeader) {
                 padding = (windowHeight - headerHeight) / 2;
@@ -132,7 +141,10 @@ var SlideHeader = /** @class */ (function () {
                 padding = (windowHeight - headerHeight + headerBarHeight) / 2;
             }
             this.config.slidePoint = windowHeight;
-            header2.setAttribute('style', "\n          'padding-top': " + padding + "px;\n          'padding-bottom': " + padding + "px;\n        ");
+            header2.setAttribute('style', `
+          'padding-top': ${padding}px;
+          'padding-bottom': ${padding}px;
+        `);
         }
         else {
             if (this.config.isCloneHeader) {
@@ -142,8 +154,8 @@ var SlideHeader = /** @class */ (function () {
                 this.config.slidePoint = headerHeight - headerBarHeight;
             }
         }
-    };
-    SlideHeader.prototype.init = function (type) {
+    }
+    init(type) {
         if (type &&
             (type === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP ||
                 type === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)) {
@@ -158,8 +170,7 @@ var SlideHeader = /** @class */ (function () {
             this.changeHeaderHeight();
         }
         this.runSlideHeader();
-    };
-    return SlideHeader;
-}());
+    }
+}
 exports.SlideHeader = SlideHeader;
 window.SlideHeader = SlideHeader;
