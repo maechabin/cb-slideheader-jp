@@ -7,10 +7,10 @@
   ],
   "main": "./dist/app.js",
   "scripts": {
-    "build:ts": "tsc -d --module commonjs --outDir dist ./src/app.ts",
-    "build:p": "parcel build ./dist/app.js --out-file slideheader.min.js",
-    "build": "parcel build ./src/app.ts --global slideheader --no-minify --out-file slideheader.js",
-    "build:min": "parcel build ./src/app.ts --global slideheader --out-file slideheader.min.js",
+    "ts": "tsc",
+    "tsc": "tsc -d --module commonjs --outDir dist ./src/app.ts",
+    "build:prod": "parcel build ./dist/app.js --out-file slideheader.min.js --no-source-maps",
+    "build": "parcel build ./dist/app.js --global slideheader --no-minify --out-file slideheader.js",
     "test:jquery": "gulp test",
     "watch:jquery": "watchify -t babelify ./src/jquery/app.js -o ./dist/jquery/jquery.cbslideheader.js",
     "build:jquery": "browserify -t babelify ./src/jquery/app.js | uglifyjs -c warnings=false > ./dist/jquery/jquery.cbslideheader.min.js"
