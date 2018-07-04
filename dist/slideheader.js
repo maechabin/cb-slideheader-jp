@@ -98,7 +98,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
+})({3:[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -268,5 +268,5 @@ var SlideHeader = /** @class */function () {
 }();
 exports.SlideHeader = SlideHeader;
 window.SlideHeader = SlideHeader;
-},{"./app.model":4}]},{},[1], "slideheader")
+},{"./app.model":3}]},{},[1], null)
 //# sourceMappingURL=/slideheader.map
