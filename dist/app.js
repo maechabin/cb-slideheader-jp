@@ -21,9 +21,9 @@ var SlideHeader = (function () {
             slideUpTiming: app_model_1.SlideHeaderModel.SLIDE_TIMING.EASE,
             slideDownCallback: function () { },
             slideUpCallback: function () { },
-            isCloneHeader: false,
-            isFullscreenView: false,
-            isHeadroom: false,
+            cloneHeader: false,
+            fullscreenView: false,
+            headroom: false,
         };
     }
     SlideHeader.prototype.handleScroll = function (top, slideType) {
@@ -65,7 +65,7 @@ var SlideHeader = (function () {
         var css2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
         window.addEventListener('scroll', function () {
             currentScrollTop = window.scrollY;
-            if (_this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.isHeadroom) {
+            if (_this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.headroom) {
                 if (currentScrollTop > startingScrollTop && currentScrollTop > _this.config.slidePoint) {
                     if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                         _this.handleScroll(top1, slideType1);
@@ -120,7 +120,7 @@ var SlideHeader = (function () {
         var windowHeight = window.outerHeight;
         var padding = null;
         if (windowHeight > headerHeight) {
-            if (this.config.isCloneHeader) {
+            if (this.config.cloneHeader) {
                 padding = (windowHeight - headerHeight) / 2;
             }
             else {
@@ -130,7 +130,7 @@ var SlideHeader = (function () {
             header2.setAttribute('style', "\n          'padding-top': " + padding + "px;\n          'padding-bottom': " + padding + "px;\n        ");
         }
         else {
-            if (this.config.isCloneHeader) {
+            if (this.config.cloneHeader) {
                 this.config.slidePoint = headerHeight;
             }
             else {
@@ -145,16 +145,16 @@ var SlideHeader = (function () {
             this.methodType = type;
         }
         this.config = Object.assign({}, this.defaults, this.options);
-        if (this.config.isCloneHeader) {
+        if (this.config.cloneHeader) {
             this.cloneHeader();
         }
         this.applyStyle();
-        if (this.config.isFullscreenView) {
+        if (this.config.fullscreenView) {
             this.changeHeaderHeight();
         }
         this.runSlideHeader();
     };
     return SlideHeader;
 }());
-exports.SlideHeader = SlideHeader;
+exports.default = SlideHeader;
 window.SlideHeader = SlideHeader;
