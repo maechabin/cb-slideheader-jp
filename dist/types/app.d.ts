@@ -1,5 +1,5 @@
 import { SlideHeaderModel } from './app.model';
-export declare class SlideHeader {
+export default class SlideHeader {
     element: Element;
     methodType: SlideHeaderModel.METHOD_TYPE;
     slideDirection: SlideHeaderModel.SLIDE_TYPE;
