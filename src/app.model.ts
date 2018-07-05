@@ -31,8 +31,8 @@ export namespace SlideHeaderModel {
     slideUpTiming?: SLIDE_TIMING | string;
     slideDownCallback?: () => void;
     slideUpCallback?: () => void;
-    isCloneHeader?: boolean;
-    isFullscreenView?: boolean;
-    isHeadroom?: boolean;
+    cloneHeader?: boolean;
+    fullscreenView?: boolean;
+    headroom?: boolean;
   }
 }

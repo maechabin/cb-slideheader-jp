@@ -25,9 +25,9 @@ export class SlideHeader {
       slideUpTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
       slideDownCallback: () => {},
       slideUpCallback: () => {},
-      isCloneHeader: false,
-      isFullscreenView: false,
-      isHeadroom: false,
+      cloneHeader: false,
+      fullscreenView: false,
+      headroom: false,
     };
   }
 
@@ -93,7 +93,7 @@ export class SlideHeader {
       () => {
         currentScrollTop = window.scrollY;
 
-        if (this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.isHeadroom) {
+        if (this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.headroom) {
           /** Headroom時 */
           if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
             if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
@@ -174,7 +174,7 @@ export class SlideHeader {
     let padding: number = null;
 
     if (windowHeight > headerHeight) {
-      if (this.config.isCloneHeader) {
+      if (this.config.cloneHeader) {
         padding = (windowHeight - headerHeight) / 2;
       } else {
         padding = (windowHeight - headerHeight + headerBarHeight) / 2;
@@ -188,7 +188,7 @@ export class SlideHeader {
         `,
       );
     } else {
-      if (this.config.isCloneHeader) {
+      if (this.config.cloneHeader) {
         this.config.slidePoint = headerHeight;
       } else {
         this.config.slidePoint = headerHeight - headerBarHeight;
@@ -205,11 +205,11 @@ export class SlideHeader {
       this.methodType = type;
     }
     this.config = (<any>Object).assign({}, this.defaults, this.options);
-    if (this.config.isCloneHeader) {
+    if (this.config.cloneHeader) {
       this.cloneHeader();
     }
     this.applyStyle();
-    if (this.config.isFullscreenView) {
+    if (this.config.fullscreenView) {
       this.changeHeaderHeight();
     }
     this.runSlideHeader();
