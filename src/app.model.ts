@@ -18,6 +18,7 @@ export namespace SlideHeaderModel {
   }
 
   export interface Option {
+    [key: string]: any;
     headerBarHeight?: number;
     headerBarWidth?: string;
     header2SelectorName?: string;
@@ -25,8 +26,8 @@ export namespace SlideHeaderModel {
     boxShadow?: string;
     opacity?: number;
     slidePoint?: number;
-    slideDownDuration: string;
-    slideUpDuration: string;
+    slideDownDuration?: string;
+    slideUpDuration?: string;
     slideDownTiming?: SLIDE_TIMING | string;
     slideUpTiming?: SLIDE_TIMING | string;
     slideDownCallback?: () => void;

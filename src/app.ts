@@ -4,12 +4,21 @@ export default class SlideHeader {
   element: Element;
   methodType: SlideHeaderModel.METHOD_TYPE = SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
   slideDirection: SlideHeaderModel.SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE.UP;
-  config: SlideHeaderModel.Option;
+  config: SlideHeaderModel.Option = {} as SlideHeaderModel.Option;
   options: SlideHeaderModel.Option;
   defaults: SlideHeaderModel.Option;
 
   constructor(element: string, options: SlideHeaderModel.Option) {
-    this.element = document.querySelector(element);
+    if (!element) {
+      throw new Error('element must not be null.');
+    }
+
+    this.element = document.querySelector(element) as Element;
+
+    if (this.element instanceof Element === false) {
+      throw new Error('querySelector does not find appropriate element.');
+    }
+
     this.options = options;
     this.defaults = {
       headerBarHeight: this.element.clientHeight,
@@ -35,7 +44,7 @@ export default class SlideHeader {
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
-    let frameId;
+    let frameId: number = 0;
     cancelAnimationFrame(frameId);
     frameId = requestAnimationFrame(() => {
       this.element.setAttribute(
@@ -91,6 +100,10 @@ export default class SlideHeader {
     window.addEventListener(
       'scroll',
       () => {
+        if (!this.config.slidePoint) {
+          throw new Error('slidePoint must not to be undefined.');
+        }
+
         currentScrollTop = window.scrollY;
 
         if (this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.headroom) {
@@ -154,6 +167,10 @@ export default class SlideHeader {
   }
 
   cloneHeader(): void {
+    if (!this.element.parentNode) {
+      throw new Error('parentNode does not be found.');
+    }
+
     const clonedElement = this.element.cloneNode(true) as HTMLElement;
     this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
     clonedElement.removeAttribute('class');
@@ -167,11 +184,20 @@ export default class SlideHeader {
   }
 
   changeHeaderHeight(): void {
+    if (!this.config.header2SelectorName) {
+      throw new Error('header2SelectorName must not be undefined.');
+    }
+
+    const header2: Element = document.querySelector(this.config.header2SelectorName) as Element;
+
+    if (header2 instanceof Element === false) {
+      throw new Error('querySelector does not find appropriate element.');
+    }
+
     const headerBarHeight: number = this.element.clientHeight;
-    const header2: Element = document.querySelector(this.config.header2SelectorName);
     const headerHeight: number = headerBarHeight + header2.clientHeight;
     const windowHeight: number = window.outerHeight;
-    let padding: number = null;
+    let padding: number = 0;
 
     if (windowHeight > headerHeight) {
       if (this.config.cloneHeader) {
@@ -204,7 +230,7 @@ export default class SlideHeader {
     ) {
       this.methodType = type;
     }
-    this.config = (<any>Object).assign({}, this.defaults, this.options);
+    this.config = (<SlideHeaderModel.Option>Object).assign({}, this.defaults, this.options);
     if (this.config.cloneHeader) {
       this.cloneHeader();
     }
