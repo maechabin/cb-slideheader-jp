@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var SlideHeaderModel;
 (function (SlideHeaderModel) {
     var SLIDE_TYPE;

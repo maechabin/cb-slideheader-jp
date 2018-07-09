@@ -1,11 +1,18 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var app_model_1 = require("./app.model");
-var SlideHeader = (function () {
+var SlideHeader = /** @class */ (function () {
     function SlideHeader(element, options) {
         this.methodType = app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
         this.slideDirection = app_model_1.SlideHeaderModel.SLIDE_TYPE.UP;
+        this.config = {};
+        if (!element) {
+            throw new Error('element must not be null.');
+        }
         this.element = document.querySelector(element);
+        if (this.element instanceof Element === false) {
+            throw new Error('querySelector does not find appropriate element.');
+        }
         this.options = options;
         this.defaults = {
             headerBarHeight: this.element.clientHeight,
@@ -23,14 +30,14 @@ var SlideHeader = (function () {
             slideUpCallback: function () { },
             cloneHeader: false,
             fullscreenView: false,
-            headroom: false,
+            headroom: false
         };
     }
     SlideHeader.prototype.handleScroll = function (top, slideType) {
         var _this = this;
         var slideDuration = this.config["slide" + slideType + "Duration"];
         var slideTiming = this.config["slide" + slideType + "Timing"];
-        var frameId;
+        var frameId = 0;
         cancelAnimationFrame(frameId);
         frameId = requestAnimationFrame(function () {
             _this.element.setAttribute('style', "\n          transition: transform " + slideDuration + " " + slideTiming + ";\n          transform: translate3d(0, " + top + ", 0);\n        ");
@@ -42,6 +49,7 @@ var SlideHeader = (function () {
     };
     SlideHeader.prototype.handleTransitionend = function (slideType, style) {
         this.config["slide" + slideType + "Callback"];
+        //this.element.setAttribute('style', style);
     };
     SlideHeader.prototype.runSlideHeader = function () {
         var _this = this;
@@ -57,15 +65,19 @@ var SlideHeader = (function () {
         var slideType2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
             ? app_model_1.SlideHeaderModel.SLIDE_TYPE.UP
             : app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN;
-        var startingScrollTop = 0;
-        var currentScrollTop = 0;
+        var startingScrollTop = 0; // スライドの開始位置
+        var currentScrollTop = 0; // 現在のスクロールの位置
         var style1 = "\n      box-shadow: " + this.config.boxShadow + ";\n      transition: 'box-shadow .9s linear',\n    ";
         var style2 = "\n      box-shadow: none;\n    ";
         var css1 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
         var css2 = this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
         window.addEventListener('scroll', function () {
+            if (!_this.config.slidePoint) {
+                throw new Error('slidePoint must not to be undefined.');
+            }
             currentScrollTop = window.scrollY;
             if (_this.methodType === app_model_1.SlideHeaderModel.METHOD_TYPE.SLIDE_UP && _this.config.headroom) {
+                /** Headroom時 */
                 if (currentScrollTop > startingScrollTop && currentScrollTop > _this.config.slidePoint) {
                     if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                         _this.handleScroll(top1, slideType1);
@@ -79,12 +91,15 @@ var SlideHeader = (function () {
                 startingScrollTop = currentScrollTop;
             }
             else {
+                /** 通常時（Headroomじゃない時） */
                 if (currentScrollTop > _this.config.slidePoint) {
+                    /** スクロール位置がスライドポイントより大きくなった場合 */
                     if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.UP) {
                         _this.handleScroll(top1, slideType1);
                     }
                 }
                 else {
+                    /** スクロール位置がスライドポイントより小さくなった場合 */
                     if (_this.slideDirection === app_model_1.SlideHeaderModel.SLIDE_TYPE.DOWN) {
                         _this.handleScroll(top2, slideType2);
                     }
@@ -107,6 +122,9 @@ var SlideHeader = (function () {
         this.element.setAttribute('style', "\n        transform: translate3d(0, " + top + ", 0);\n        visibility: 'visible';\n        opacity: " + this.config.opacity + ";\n        width: " + this.config.headerBarWidth + ";\n        zIndex: " + this.config.zIndex + ";\n      ");
     };
     SlideHeader.prototype.cloneHeader = function () {
+        if (!this.element.parentNode) {
+            throw new Error('parentNode does not be found.');
+        }
         var clonedElement = this.element.cloneNode(true);
         this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
         clonedElement.removeAttribute('class');
@@ -114,11 +132,17 @@ var SlideHeader = (function () {
         clonedElement.setAttribute('style', "\n        'z-index': 10000;\n      ");
     };
     SlideHeader.prototype.changeHeaderHeight = function () {
-        var headerBarHeight = this.element.clientHeight;
+        if (!this.config.header2SelectorName) {
+            throw new Error('header2SelectorName must not be undefined.');
+        }
         var header2 = document.querySelector(this.config.header2SelectorName);
+        if (header2 instanceof Element === false) {
+            throw new Error('querySelector does not find appropriate element.');
+        }
+        var headerBarHeight = this.element.clientHeight;
         var headerHeight = headerBarHeight + header2.clientHeight;
         var windowHeight = window.outerHeight;
-        var padding = null;
+        var padding = 0;
         if (windowHeight > headerHeight) {
             if (this.config.cloneHeader) {
                 padding = (windowHeight - headerHeight) / 2;
@@ -156,5 +180,5 @@ var SlideHeader = (function () {
     };
     return SlideHeader;
 }());
-exports.default = SlideHeader;
+exports["default"] = SlideHeader;
 window.SlideHeader = SlideHeader;
