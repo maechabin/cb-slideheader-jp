@@ -1,5 +1,5 @@
 import jQuery from 'jquery';
-import SlideHeader from 'SlideHeader';
+import SlideHeader from './SlideHeader';
 /*!
  * jquery.cbslideheader.js v0.4.0
  * Auther @maechabin
