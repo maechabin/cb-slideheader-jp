@@ -14,7 +14,8 @@
     "build": "parcel build ./dist/app.js --global slideheader --no-minify --out-file slideheader.js",
     "test:jquery": "gulp test",
     "watch:jquery": "watchify -t babelify ./src/jquery/app.js -o ./dist/jquery/jquery.cbslideheader.js",
-    "build:jquery": "browserify -t babelify ./src/jquery/app.js | uglifyjs -c warnings=false > ./dist/jquery/jquery.cbslideheader.min.js"
+    "build:jquery": "browserify -t babelify ./src/jquery/app.js | uglifyjs -c warnings=false > ./dist/jquery/jquery.cbslideheader.min.js",
+    "build:docs": "parcel build ./docs/src/script.ts --out-dir ./docs"
   },
   "repository": {
     "type": "git",
@@ -48,7 +49,7 @@
     "gulp-qunit": "^1.2.1",
     "gulp-uglify": "^1.2.0",
     "jquery": "^1.12.4",
-    "parcel-bundler": "^1.9.4",
+    "parcel-bundler": "^1.9.5",
     "qunitjs": "^1.18.0",
     "typescript": "^2.9.2",
     "uglifyjs": "^2.4.11",
