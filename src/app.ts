@@ -47,13 +47,8 @@ export default class SlideHeader {
     let frameId: number = 0;
     cancelAnimationFrame(frameId);
     frameId = requestAnimationFrame(() => {
-      this.element.setAttribute(
-        'style',
-        `
-          transition: transform ${slideDuration} ${slideTiming};
-          transform: translate3d(0, ${top}, 0);
-        `,
-      );
+      this.element.style.transition = `transform ${slideDuration} ${slideTiming}`;
+      this.element.style.transform = `translate3d(0, ${top}, 0)`;
     });
 
     this.slideDirection =
@@ -64,7 +59,7 @@ export default class SlideHeader {
 
   handleTransitionend(slideType: SlideHeaderModel.SLIDE_TYPE, style: string): void {
     this.config[`slide${slideType}Callback`];
-    //this.element.setAttribute('style', style);
+    this.element.style.boxShadow = style;
   }
 
   runSlideHeader(): void {
@@ -87,13 +82,8 @@ export default class SlideHeader {
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
-    const style1 = `
-      box-shadow: ${this.config.boxShadow};
-      transition: 'box-shadow .9s linear',
-    `;
-    const style2 = `
-      box-shadow: none;
-    `;
+    const style1 = `${this.config.boxShadow}`;
+    const style2 = 'none';
     const css1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
     const css2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
 
@@ -154,16 +144,11 @@ export default class SlideHeader {
       this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
         ? `-${this.config.headerBarHeight}px`
         : 0;
-    this.element.setAttribute(
-      'style',
-      `
-        transform: translate3d(0, ${top}, 0);
-        visibility: 'visible';
-        opacity: ${this.config.opacity};
-        width: ${this.config.headerBarWidth};
-        zIndex: ${this.config.zIndex};
-      `,
-    );
+    this.element.style.transform = `translate3d(0, ${top}, 0)`;
+    this.element.style.visibility = 'visible';
+    this.element.style.opacity = `${this.config.opacity}`;
+    this.element.style.width = `${this.config.headerBarWidth}`;
+    this.element.style.zIndex = `${this.config.zIndex}`;
   }
 
   cloneHeader(): void {
@@ -175,12 +160,7 @@ export default class SlideHeader {
     this.element.parentNode.insertBefore(clonedElement, this.element.nextElementSibling);
     clonedElement.removeAttribute('class');
     clonedElement.setAttribute('class', 'cb-header1');
-    clonedElement.setAttribute(
-      'style',
-      `
-        'z-index': 10000;
-      `,
-    );
+    clonedElement.style.zIndex = '10000';
   }
 
   changeHeaderHeight(): void {
@@ -208,13 +188,8 @@ export default class SlideHeader {
         padding = (windowHeight - headerHeight + headerBarHeight) / 2;
       }
       this.config.slidePoint = windowHeight;
-      header2.setAttribute(
-        'style',
-        `
-          'padding-top': ${padding}px;
-          'padding-bottom': ${padding}px;
-        `,
-      );
+      header2.style.paddingTop = `${padding}px`;
+      header2.style.paddingBottom = `${padding}px`;
     } else {
       if (this.config.cloneHeader) {
         this.config.slidePoint = headerHeight;
