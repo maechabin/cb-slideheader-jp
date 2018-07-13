@@ -1,0 +1,32 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.content {
+  padding: 0;
+  margin: 0;
+  background-color: #039be5;
+  height: 150vh;
+  padding-top: 104px;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 80px;
+  color: #fff;
+}
+
+.cb-header2 {
+  background-color: red;
+}
+
+.header {
+  margin: 0;
+  background-color: #000;
+  line-height: 80px;
+  text-align: center;
+  width: 100%;
+  color: #fff;
+}
