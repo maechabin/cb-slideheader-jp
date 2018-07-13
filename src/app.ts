@@ -1,7 +1,7 @@
 import { SlideHeaderModel } from './app.model';
 
 export default class SlideHeader {
-  element: Element;
+  element: HTMLElement;
   methodType: SlideHeaderModel.METHOD_TYPE = SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
   slideDirection: SlideHeaderModel.SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE.UP;
   config: SlideHeaderModel.Option = {} as SlideHeaderModel.Option;
@@ -13,9 +13,9 @@ export default class SlideHeader {
       throw new Error('element must not be null.');
     }
 
-    this.element = document.querySelector(element) as Element;
+    this.element = document.querySelector(element) as HTMLElement;
 
-    if (this.element instanceof Element === false) {
+    if (this.element instanceof HTMLElement === false) {
       throw new Error('querySelector does not find appropriate element.');
     }
 
@@ -188,9 +188,11 @@ export default class SlideHeader {
       throw new Error('header2SelectorName must not be undefined.');
     }
 
-    const header2: Element = document.querySelector(this.config.header2SelectorName) as Element;
+    const header2: HTMLElement = document.querySelector(
+      this.config.header2SelectorName,
+    ) as HTMLElement;
 
-    if (header2 instanceof Element === false) {
+    if (header2 instanceof HTMLElement === false) {
       throw new Error('querySelector does not find appropriate element.');
     }
 
