@@ -22,9 +22,11 @@
   <script>
     window.onload = () => {
       new SlideHeader('.cb-header', {
-        headroom: true,
+        headroom: false,
         slidePoint: 64,
-      }).init('slideUp');
+        boxShadow: '0 0 30px #333',
+        opacity: 0.5,
+      }).init('slideDown');
     }
   </script>
 </body>
