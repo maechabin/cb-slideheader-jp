@@ -1,13 +1,24 @@
 import { SlideHeaderModel as SH } from './app.model';
 
 export default class SlideHeader {
+  /** 対象となるヘッダーバー要素 */
   element: HTMLElement;
+  /** メソッドタイプ */
   methodType: SH.MethodType = SH.MethodType.SLIDE_DOWN;
+  /** ヘッダバーのスライドの方向 */
   slideDirection: SH.SlideType = SH.SlideType.UP;
+  /** オプション設定 */
   config: SH.Option = {} as SH.Option;
+  /** ユーザーが指定するオプション設定 */
   options: SH.Option;
+  /** デフォルトのオプション設定 */
   defaults: SH.Option;
 
+  /**
+   * インスタンスを生成する
+   * @param element
+   * @param options
+   */
   constructor(element: string, options: SH.Option) {
     if (!element) {
       throw new Error('element must not be null.');
@@ -63,6 +74,9 @@ export default class SlideHeader {
    * ヘッダーバーのアニメーションが終わった時に呼び出される処理
    * @param slideType
    * @param style
+   * scrollイベントを監視する
+   * @param slideType1
+   * @param slideType2
    */
   handleTransitionend(slideType: SH.SlideType, style: string): void {
     this.config[`slide${slideType}Callback`];
@@ -115,6 +129,11 @@ export default class SlideHeader {
     );
   }
 
+  /**
+   * TransitionEndイベントを監視する
+   * @param slideType1
+   * @param slideType2
+   */
   listenTransitionEnd(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
     const boxShadowStyle1 = `${this.config.boxShadow}`;
     const boxShadowStyle2 = 'none';
