@@ -41,6 +41,11 @@ export default class SlideHeader {
   }
 
   handleScroll(top: number | string, slideType: SlideHeaderModel.SLIDE_TYPE): void {
+  /**
+   * ブラウザをスクロールした時に呼び出される処理
+   * @param top
+   * @param slideType
+   */
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
@@ -58,6 +63,11 @@ export default class SlideHeader {
   }
 
   handleTransitionend(slideType: SlideHeaderModel.SLIDE_TYPE, style: string): void {
+  /**
+   * ヘッダーバーのアニメーションが終わった時に呼び出される処理
+   * @param slideType
+   * @param style
+   */
     this.config[`slide${slideType}Callback`];
     this.element.style.boxShadow = style;
   }
@@ -79,6 +89,9 @@ export default class SlideHeader {
       this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
         ? SlideHeaderModel.SLIDE_TYPE.UP
         : SlideHeaderModel.SLIDE_TYPE.DOWN;
+  /**
+   * SlideHeaderのメイン処理
+   */
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
@@ -144,6 +157,9 @@ export default class SlideHeader {
       this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
         ? `-${this.config.headerBarHeight}px`
         : 0;
+  /**
+   * ヘッダーバーの初期スタイルを適用する
+   */
     this.element.style.transform = `translate3d(0, ${top}, 0)`;
     this.element.style.visibility = 'visible';
     this.element.style.opacity = `${this.config.opacity}`;
@@ -151,6 +167,10 @@ export default class SlideHeader {
     this.element.style.zIndex = `${this.config.zIndex}`;
   }
 
+  /**
+   * ヘッダーバーを複製する
+   * cloneHeaderがtrueの時のみ呼び出される
+   */
   cloneHeader(): void {
     if (!this.element.parentNode) {
       throw new Error('parentNode does not be found.');
@@ -164,6 +184,10 @@ export default class SlideHeader {
   }
 
   changeHeaderHeight(): void {
+  /**
+   * フルスクリーン要素（header2）の高さを適用する
+   * fullscreenViewがtrueの時のみ呼び出される
+   */
     if (!this.config.header2SelectorName) {
       throw new Error('header2SelectorName must not be undefined.');
     }
@@ -206,6 +230,10 @@ export default class SlideHeader {
         type === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)
     ) {
       this.methodType = type;
+  /**
+   * インスタンスを初期化する
+   * @param type
+   */
     }
     this.config = (<SlideHeaderModel.Option>Object).assign({}, this.defaults, this.options);
     if (this.config.cloneHeader) {
