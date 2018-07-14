@@ -1,14 +1,14 @@
-import { SlideHeaderModel } from './app.model';
+import { SlideHeaderModel as SH } from './app.model';
 
 export default class SlideHeader {
   element: HTMLElement;
-  methodType: SlideHeaderModel.METHOD_TYPE = SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN;
-  slideDirection: SlideHeaderModel.SLIDE_TYPE = SlideHeaderModel.SLIDE_TYPE.UP;
-  config: SlideHeaderModel.Option = {} as SlideHeaderModel.Option;
-  options: SlideHeaderModel.Option;
-  defaults: SlideHeaderModel.Option;
+  methodType: SH.MethodType = SH.MethodType.SLIDE_DOWN;
+  slideDirection: SH.SlideType = SH.SlideType.UP;
+  config: SH.Option = {} as SH.Option;
+  options: SH.Option;
+  defaults: SH.Option;
 
-  constructor(element: string, options: SlideHeaderModel.Option) {
+  constructor(element: string, options: SH.Option) {
     if (!element) {
       throw new Error('element must not be null.');
     }
@@ -30,8 +30,8 @@ export default class SlideHeader {
       slidePoint: 0,
       slideDownDuration: '500ms',
       slideUpDuration: '500ms',
-      slideDownTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
-      slideUpTiming: SlideHeaderModel.SLIDE_TIMING.EASE,
+      slideDownTiming: SH.SlideTiming.EASE,
+      slideUpTiming: SH.SlideTiming.EASE,
       slideDownCallback: () => {},
       slideUpCallback: () => {},
       cloneHeader: false,
@@ -40,12 +40,12 @@ export default class SlideHeader {
     };
   }
 
-  handleScroll(top: number | string, slideType: SlideHeaderModel.SLIDE_TYPE): void {
   /**
    * ブラウザをスクロールした時に呼び出される処理
    * @param top
    * @param slideType
    */
+  handleScroll(top: number | string, slideType: SH.SlideType): void {
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
@@ -56,49 +56,34 @@ export default class SlideHeader {
       this.element.style.transform = `translate3d(0, ${top}, 0)`;
     });
 
-    this.slideDirection =
-      this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP
-        ? SlideHeaderModel.SLIDE_TYPE.DOWN
-        : SlideHeaderModel.SLIDE_TYPE.UP;
+    this.slideDirection = this.slideDirection === SH.SlideType.UP ? SH.SlideType.DOWN : SH.SlideType.UP;
   }
 
-  handleTransitionend(slideType: SlideHeaderModel.SLIDE_TYPE, style: string): void {
   /**
    * ヘッダーバーのアニメーションが終わった時に呼び出される処理
    * @param slideType
    * @param style
    */
+  handleTransitionend(slideType: SH.SlideType, style: string): void {
     this.config[`slide${slideType}Callback`];
     this.element.style.boxShadow = style;
   }
 
   runSlideHeader(): void {
-    const top1 =
-      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-        ? 0
-        : `-${this.config.headerBarHeight}px`;
-    const top2 =
-      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-        ? `-${this.config.headerBarHeight}px`
-        : 0;
-    const slideType1 =
-      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-        ? SlideHeaderModel.SLIDE_TYPE.DOWN
-        : SlideHeaderModel.SLIDE_TYPE.UP;
-    const slideType2 =
-      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-        ? SlideHeaderModel.SLIDE_TYPE.UP
-        : SlideHeaderModel.SLIDE_TYPE.DOWN;
   /**
    * SlideHeaderのメイン処理
    */
+    const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
+    const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
+    const slideType1 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.DOWN : SH.SlideType.UP;
+    const slideType2 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.UP : SH.SlideType.DOWN;
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
     const style1 = `${this.config.boxShadow}`;
     const style2 = 'none';
-    const css1 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style1 : style2;
-    const css2 = this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN ? style2 : style1;
+    const css1 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle1 : boxShadowStyle2;
+    const css2 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle2 : boxShadowStyle1;
 
     window.addEventListener(
       'scroll',
@@ -109,14 +94,14 @@ export default class SlideHeader {
 
         currentScrollTop = window.scrollY;
 
-        if (this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_UP && this.config.headroom) {
+        if (this.methodType === SH.MethodType.SLIDE_UP && this.config.headroom) {
           /** Headroom時 */
           if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
-            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
+            if (this.slideDirection === SH.SlideType.UP) {
               this.handleScroll(top1, slideType1);
             }
           } else {
-            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
+            if (this.slideDirection === SH.SlideType.DOWN) {
               this.handleScroll(top2, slideType2);
             }
           }
@@ -125,12 +110,12 @@ export default class SlideHeader {
           /** 通常時（Headroomじゃない時） */
           if (currentScrollTop > this.config.slidePoint) {
             /** スクロール位置がスライドポイントより大きくなった場合 */
-            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
+            if (this.slideDirection === SH.SlideType.UP) {
               this.handleScroll(top1, slideType1);
             }
           } else {
             /** スクロール位置がスライドポイントより小さくなった場合 */
-            if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.DOWN) {
+            if (this.slideDirection === SH.SlideType.DOWN) {
               this.handleScroll(top2, slideType2);
             }
           }
@@ -153,13 +138,10 @@ export default class SlideHeader {
   }
 
   applyStyle(): void {
-    const top =
-      this.methodType === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN
-        ? `-${this.config.headerBarHeight}px`
-        : 0;
   /**
    * ヘッダーバーの初期スタイルを適用する
    */
+    const top = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
     this.element.style.transform = `translate3d(0, ${top}, 0)`;
     this.element.style.visibility = 'visible';
     this.element.style.opacity = `${this.config.opacity}`;
