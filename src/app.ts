@@ -69,21 +69,11 @@ export default class SlideHeader {
     this.element.style.boxShadow = style;
   }
 
-  /**
-   * SlideHeaderのメイン処理
-   */
-  excuteSlideHeader(): void {
+  listenScorll(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
     const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
     const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
-    const slideType1 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.DOWN : SH.SlideType.UP;
-    const slideType2 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.UP : SH.SlideType.DOWN;
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
-
-    const style1 = `${this.config.boxShadow}`;
-    const style2 = 'none';
-    const css1 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle1 : boxShadowStyle2;
-    const css2 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle2 : boxShadowStyle1;
 
     window.addEventListener(
       'scroll',
@@ -111,18 +101,25 @@ export default class SlideHeader {
           if (currentScrollTop > this.config.slidePoint) {
             /** スクロール位置がスライドポイントより大きくなった場合 */
             if (this.slideDirection === SH.SlideType.UP) {
-              this.handleScroll(top1, slideType1);
+              this.handleScroll(slideType1, top1);
             }
           } else {
             /** スクロール位置がスライドポイントより小さくなった場合 */
             if (this.slideDirection === SH.SlideType.DOWN) {
-              this.handleScroll(top2, slideType2);
+              this.handleScroll(slideType2, top2);
             }
           }
         }
       },
       false,
     );
+  }
+
+  listenTransitionEnd(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
+    const boxShadowStyle1 = `${this.config.boxShadow}`;
+    const boxShadowStyle2 = 'none';
+    const css1 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle1 : boxShadowStyle2;
+    const css2 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle2 : boxShadowStyle1;
 
     window.addEventListener(
       'transitionend',
@@ -133,6 +130,16 @@ export default class SlideHeader {
       },
       false,
     );
+  }
+
+  /**
+   * SlideHeaderのメイン処理
+   */
+  excuteSlideHeader(): void {
+    const slideType1 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.DOWN : SH.SlideType.UP;
+    const slideType2 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.UP : SH.SlideType.DOWN;
+    this.listenScorll(slideType1, slideType2);
+    this.listenTransitionEnd(slideType1, slideType2);
   }
 
   /**
