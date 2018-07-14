@@ -27,7 +27,7 @@ export default class SlideHeader {
    * @param element
    * @param options
    */
-  constructor(element: string, options: SH.Option) {
+  constructor(element: string, options?: SH.Option) {
     if (!element) {
       throw new Error('element must not be null.');
     }
@@ -38,7 +38,7 @@ export default class SlideHeader {
       throw new Error('querySelector does not find appropriate element.');
     }
 
-    this.options = options;
+    this.options = options as SH.Option;
     this.defaults = {
       headerBarHeight: this.element.clientHeight,
       headerBarWidth: '100%',
@@ -220,7 +220,7 @@ export default class SlideHeader {
    * インスタンスを初期化する
    * @param type
    */
-  init(type: SH.MethodType): void {
+  init(type: string): void {
     if (!(type && (type === SH.MethodType.SLIDE_UP || type === SH.MethodType.SLIDE_DOWN))) {
       throw new Error('type does not found and is not type of MethodType.');
     }
