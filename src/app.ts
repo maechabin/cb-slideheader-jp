@@ -45,7 +45,7 @@ export default class SlideHeader {
    * @param top
    * @param slideType
    */
-  handleScroll(top: number | string, slideType: SH.SlideType): void {
+  handleScroll(slideType: SH.SlideType, top: number | string): void {
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
@@ -98,11 +98,11 @@ export default class SlideHeader {
           /** Headroom時 */
           if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
             if (this.slideDirection === SH.SlideType.UP) {
-              this.handleScroll(top1, slideType1);
+              this.handleScroll(slideType1, top1);
             }
           } else {
             if (this.slideDirection === SH.SlideType.DOWN) {
-              this.handleScroll(top2, slideType2);
+              this.handleScroll(slideType2, top2);
             }
           }
           startingScrollTop = currentScrollTop;
@@ -127,11 +127,9 @@ export default class SlideHeader {
     window.addEventListener(
       'transitionend',
       () => {
-        if (this.slideDirection === SlideHeaderModel.SLIDE_TYPE.UP) {
-          this.handleTransitionend(slideType1, css1);
-        } else {
-          this.handleTransitionend(slideType2, css2);
-        }
+        const slideType = this.slideDirection === SH.SlideType.UP ? slideType1 : slideType2;
+        const css = this.slideDirection === SH.SlideType.UP ? css1 : css2;
+        this.handleTransitionend(slideType, css);
       },
       false,
     );
@@ -174,9 +172,7 @@ export default class SlideHeader {
       throw new Error('header2SelectorName must not be undefined.');
     }
 
-    const header2: HTMLElement = document.querySelector(
-      this.config.header2SelectorName,
-    ) as HTMLElement;
+    const header2: HTMLElement = document.querySelector(this.config.header2SelectorName) as HTMLElement;
 
     if (header2 instanceof HTMLElement === false) {
       throw new Error('querySelector does not find appropriate element.');
@@ -185,39 +181,30 @@ export default class SlideHeader {
     const headerBarHeight: number = this.element.clientHeight;
     const headerHeight: number = headerBarHeight + header2.clientHeight;
     const windowHeight: number = window.outerHeight;
-    let padding: number = 0;
 
     if (windowHeight > headerHeight) {
-      if (this.config.cloneHeader) {
-        padding = (windowHeight - headerHeight) / 2;
-      } else {
-        padding = (windowHeight - headerHeight + headerBarHeight) / 2;
-      }
-      this.config.slidePoint = windowHeight;
+      const padding = this.config.cloneHeader
+        ? (windowHeight - headerHeight) / 2
+        : (windowHeight - headerHeight + headerBarHeight) / 2;
       header2.style.paddingTop = `${padding}px`;
       header2.style.paddingBottom = `${padding}px`;
+      this.config.slidePoint = windowHeight;
     } else {
-      if (this.config.cloneHeader) {
-        this.config.slidePoint = headerHeight;
-      } else {
-        this.config.slidePoint = headerHeight - headerBarHeight;
-      }
+      this.config.slidePoint = this.config.cloneHeader ? headerHeight : headerHeight - headerBarHeight;
     }
   }
 
-  init(type?: SlideHeaderModel.METHOD_TYPE): void {
-    if (
-      type &&
-      (type === SlideHeaderModel.METHOD_TYPE.SLIDE_UP ||
-        type === SlideHeaderModel.METHOD_TYPE.SLIDE_DOWN)
-    ) {
-      this.methodType = type;
   /**
    * インスタンスを初期化する
    * @param type
    */
+  init(type: SH.MethodType): void {
+    if (!(type && (type === SH.MethodType.SLIDE_UP || type === SH.MethodType.SLIDE_DOWN))) {
+      throw new Error('type does not found and is not type of MethodType.');
     }
-    this.config = (<SlideHeaderModel.Option>Object).assign({}, this.defaults, this.options);
+
+    this.methodType = type;
+    this.config = (<SH.Option>Object).assign({}, this.defaults, this.options);
     if (this.config.cloneHeader) {
       this.cloneHeader();
     }
