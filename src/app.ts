@@ -14,6 +14,14 @@ export default class SlideHeader {
   /** デフォルトのオプション設定 */
   defaults: SH.Option;
 
+  /** headroomオプジョンが有効かどうか */
+  get isHeadroom(): boolean {
+    if (this.config.headroom === undefined) {
+      return false;
+    }
+    return this.methodType === SH.MethodType.SLIDE_UP && this.config.headroom;
+  }
+
   /**
    * インスタンスを生成する
    * @param element
@@ -71,18 +79,10 @@ export default class SlideHeader {
   }
 
   /**
-   * ヘッダーバーのアニメーションが終わった時に呼び出される処理
-   * @param slideType
-   * @param style
    * scrollイベントを監視する
    * @param slideType1
    * @param slideType2
    */
-  handleTransitionend(slideType: SH.SlideType, style: string): void {
-    this.config[`slide${slideType}Callback`];
-    this.element.style.boxShadow = style;
-  }
-
   listenScorll(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
     const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
     const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
@@ -98,35 +98,31 @@ export default class SlideHeader {
 
         currentScrollTop = window.scrollY;
 
-        if (this.methodType === SH.MethodType.SLIDE_UP && this.config.headroom) {
-          /** Headroom時 */
-          if (currentScrollTop > startingScrollTop && currentScrollTop > this.config.slidePoint) {
-            if (this.slideDirection === SH.SlideType.UP) {
-              this.handleScroll(slideType1, top1);
-            }
-          } else {
-            if (this.slideDirection === SH.SlideType.DOWN) {
-              this.handleScroll(slideType2, top2);
-            }
+        if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
+          if (this.slideDirection === SH.SlideType.UP) {
+            this.handleScroll(slideType1, top1);
           }
-          startingScrollTop = currentScrollTop;
         } else {
-          /** 通常時（Headroomじゃない時） */
-          if (currentScrollTop > this.config.slidePoint) {
-            /** スクロール位置がスライドポイントより大きくなった場合 */
-            if (this.slideDirection === SH.SlideType.UP) {
-              this.handleScroll(slideType1, top1);
-            }
-          } else {
-            /** スクロール位置がスライドポイントより小さくなった場合 */
-            if (this.slideDirection === SH.SlideType.DOWN) {
-              this.handleScroll(slideType2, top2);
-            }
+          if (this.slideDirection === SH.SlideType.DOWN) {
+            this.handleScroll(slideType2, top2);
           }
+        }
+        if (this.isHeadroom) {
+          startingScrollTop = currentScrollTop;
         }
       },
       false,
     );
+  }
+
+  /**
+   * ヘッダーバーのアニメーションが終わった時に呼び出される処理
+   * @param slideType
+   * @param style
+   */
+  handleTransitionend(slideType: SH.SlideType, style: string): void {
+    this.config[`slide${slideType}Callback`];
+    this.element.style.boxShadow = style;
   }
 
   /**

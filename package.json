@@ -9,7 +9,7 @@
   "typings": "./dist/types/app.d.ts",
   "scripts": {
     "ts": "tsc",
-    "tsc": "tsc -d --module commonjs --outDir dist ./src/app.ts",
+    "tsc": "tsc -d --module commonjs -t es5 --outDir dist ./src/app.ts",
     "build:prod": "parcel build ./dist/app.js --out-file slideheader.min.js --no-source-maps --experimental-scope-hoisting",
     "build": "parcel build ./dist/app.js --global slideheader --no-minify --out-file slideheader.js",
     "test:jquery": "gulp test",
