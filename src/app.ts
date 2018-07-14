@@ -133,15 +133,15 @@ export default class SlideHeader {
   listenTransitionEnd(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
     const boxShadowStyle1 = `${this.config.boxShadow}`;
     const boxShadowStyle2 = 'none';
-    const css1 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle1 : boxShadowStyle2;
-    const css2 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle2 : boxShadowStyle1;
+    const boxShadow1 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle1 : boxShadowStyle2;
+    const boxShadow2 = this.methodType === SH.MethodType.SLIDE_DOWN ? boxShadowStyle2 : boxShadowStyle1;
 
     window.addEventListener(
       'transitionend',
       () => {
         const slideType = this.slideDirection === SH.SlideType.UP ? slideType1 : slideType2;
-        const css = this.slideDirection === SH.SlideType.UP ? css1 : css2;
-        this.handleTransitionend(slideType, css);
+        const boxShadow = this.slideDirection === SH.SlideType.UP ? boxShadow1 : boxShadow2;
+        this.handleTransitionend(slideType, boxShadow);
       },
       false,
     );
