@@ -69,10 +69,10 @@ export default class SlideHeader {
     this.element.style.boxShadow = style;
   }
 
-  runSlideHeader(): void {
   /**
    * SlideHeaderのメイン処理
    */
+  excuteSlideHeader(): void {
     const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
     const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
     const slideType1 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.DOWN : SH.SlideType.UP;
@@ -137,10 +137,10 @@ export default class SlideHeader {
     );
   }
 
-  applyStyle(): void {
   /**
    * ヘッダーバーの初期スタイルを適用する
    */
+  applyDefaultHeaderStyles(): void {
     const top = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
     this.element.style.transform = `translate3d(0, ${top}, 0)`;
     this.element.style.visibility = 'visible';
@@ -165,11 +165,11 @@ export default class SlideHeader {
     clonedElement.style.zIndex = '10000';
   }
 
-  changeHeaderHeight(): void {
   /**
    * フルスクリーン要素（header2）の高さを適用する
    * fullscreenViewがtrueの時のみ呼び出される
    */
+  applyHeader2Styles(): void {
     if (!this.config.header2SelectorName) {
       throw new Error('header2SelectorName must not be undefined.');
     }
@@ -221,11 +221,11 @@ export default class SlideHeader {
     if (this.config.cloneHeader) {
       this.cloneHeader();
     }
-    this.applyStyle();
+    this.applyDefaultHeaderStyles();
     if (this.config.fullscreenView) {
-      this.changeHeaderHeight();
+      this.applyHeader2Styles();
     }
-    this.runSlideHeader();
+    this.excuteSlideHeader();
   }
 }
 
