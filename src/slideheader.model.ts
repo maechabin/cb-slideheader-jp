@@ -1,15 +1,15 @@
 export namespace SlideHeaderModel {
-  export enum SLIDE_TYPE {
+  export enum SlideType {
     UP = 'Up',
     DOWN = 'Down',
   }
 
-  export enum METHOD_TYPE {
+  export enum MethodType {
     SLIDE_DOWN = 'slideDown',
     SLIDE_UP = 'slideUp',
   }
 
-  export enum SLIDE_TIMING {
+  export enum SlideTiming {
     EASE = 'ease',
     LINEAR = 'linear',
     EASE_IN = 'ease-in',
@@ -28,8 +28,8 @@ export namespace SlideHeaderModel {
     slidePoint?: number;
     slideDownDuration?: string;
     slideUpDuration?: string;
-    slideDownTiming?: SLIDE_TIMING | string;
-    slideUpTiming?: SLIDE_TIMING | string;
+    slideDownTiming?: SlideTiming | string;
+    slideUpTiming?: SlideTiming | string;
     slideDownCallback?: () => void;
     slideUpCallback?: () => void;
     cloneHeader?: boolean;
