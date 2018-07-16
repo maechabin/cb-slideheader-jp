@@ -16,7 +16,7 @@ export default class SlideHeader {
 
   /** headroomオプジョンが有効かどうか */
   get isHeadroom(): boolean {
-    if (this.config.headroom === undefined) {
+    if (this.config.headroom === undefined || this.config.headroom === null) {
       return false;
     }
     return this.methodType === SH.MethodType.SLIDE_UP && this.config.headroom;
@@ -83,7 +83,7 @@ export default class SlideHeader {
    * @param slideType1
    * @param slideType2
    */
-  listenScorll(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
+  listenScroll(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
     const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
     const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
     let startingScrollTop: number = 0; // スライドの開始位置
@@ -92,12 +92,12 @@ export default class SlideHeader {
     window.addEventListener(
       'scroll',
       () => {
-        if (!this.config.slidePoint) {
+        if (this.config.slidePoint === undefined || this.config.slidePoint === null) {
           throw new Error('slidePoint must not to be undefined.');
         }
 
         currentScrollTop = window.scrollY;
-
+        console.log(window.scrollY);
         if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
           if (this.slideDirection === SH.SlideType.UP) {
             this.handleScroll(slideType1, top1);
@@ -121,8 +121,10 @@ export default class SlideHeader {
    * @param style
    */
   handleTransitionend(slideType: SH.SlideType, style: string): void {
-    this.config[`slide${slideType}Callback`];
     this.element.style.boxShadow = style;
+    if (typeof this.config[`slide${slideType}Callback`] === 'function') {
+      this.config[`slide${slideType}Callback`]();
+    }
   }
 
   /**
@@ -153,7 +155,7 @@ export default class SlideHeader {
   excuteSlideHeader(): void {
     const slideType1 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.DOWN : SH.SlideType.UP;
     const slideType2 = this.methodType === SH.MethodType.SLIDE_DOWN ? SH.SlideType.UP : SH.SlideType.DOWN;
-    this.listenScorll(slideType1, slideType2);
+    this.listenScroll(slideType1, slideType2);
     this.listenTransitionEnd(slideType1, slideType2);
   }
 
@@ -217,6 +219,15 @@ export default class SlideHeader {
   }
 
   /**
+   * オプションをマージする
+   * @param defaults
+   * @param options
+   */
+  mergeOptions(defaults: SH.Option, options: SH.Option) {
+    this.config = (<SH.Option>Object).assign({}, defaults, options);
+  }
+
+  /**
    * インスタンスを初期化する
    * @param type
    */
@@ -226,7 +237,7 @@ export default class SlideHeader {
     }
 
     this.methodType = type;
-    this.config = (<SH.Option>Object).assign({}, this.defaults, this.options);
+    this.mergeOptions(this.defaults, this.options);
     if (this.config.cloneHeader) {
       this.cloneHeader();
     }
