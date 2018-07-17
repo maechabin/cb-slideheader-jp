@@ -8,6 +8,7 @@ describe('slideheader', () => {
     document.body.innerHTML = `
       <header class="cb-header"></header>
       <div class="cb-header2"></div>
+      <div style="height: 1000px"></div>
     `;
   });
 
@@ -217,24 +218,33 @@ describe('slideheader', () => {
     expect(style.zIndex).toBe('123');
   });
 
-  it('handleScroll', () => {
+  it('handleScroll', done => {
     slideheader = new SlideHeader('.cb-header');
     slideheader.init('slideUp');
     slideheader.slideDirection = SH.SlideType.UP;
 
     slideheader.handleScroll(SH.SlideType.UP, 123);
 
-    // const style = slideheader.element.style;
-    // const expectedSlideDuration = slideheader.config[`slide${SH.SlideType.UP}Duration`];
-    // const expectedSlideTiming = slideheader.config[`slide${SH.SlideType.UP}Timing`];
-    // expect(style.transition).toBe(`transform ${expectedSlideDuration} ${expectedSlideTiming}`);
-    // expect(style.transform).toBe('translate3d(0, 123, 0)');
+    const style = slideheader.element.style;
+    const expectedSlideDuration = slideheader.config[`slide${SH.SlideType.UP}Duration`];
+    const expectedSlideTiming = slideheader.config[`slide${SH.SlideType.UP}Timing`];
+    window.requestAnimationFrame(() => {
+      expect(style.transition).toBe(`transform ${expectedSlideDuration} ${expectedSlideTiming}`);
+      expect(style.transform).toBe('translate3d(0, 123, 0)');
+      done();
+    });
     expect(slideheader.slideDirection).toBe(SH.SlideType.DOWN);
   });
 
+  /**
+   * jsdomがwindow.scrollToに対応するまで保留
+   */
   xdescribe('listenScroll', () => {
-    it('', () => {
+    beforeEach(() => {
       window.scrollTo(0, 0);
+    });
+
+    it('should work', () => {
       slideheader = new SlideHeader('.cb-header');
       slideheader.init('slideUp');
       const spy = jest.spyOn(slideheader, 'handleScroll');

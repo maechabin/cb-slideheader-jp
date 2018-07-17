@@ -97,7 +97,7 @@ export default class SlideHeader {
         }
 
         currentScrollTop = window.scrollY;
-        console.log(window.scrollY);
+
         if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
           if (this.slideDirection === SH.SlideType.UP) {
             this.handleScroll(slideType1, top1);
