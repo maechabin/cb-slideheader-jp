@@ -13,6 +13,7 @@
     "build": "parcel build ./dist/app.js --global slideheader --no-minify --out-file slideheader.js",
     "test": "jest",
     "test:w": "jest --watch",
+    "test:c": "npm test -- --coverage",
     "test:jquery": "gulp test",
     "watch:jquery": "watchify -t babelify ./src/jquery/app.js -o ./dist/jquery/jquery.cbslideheader.js",
     "build:jquery": "browserify -t babelify ./src/jquery/app.js | uglifyjs -c warnings=false > ./dist/jquery/jquery.cbslideheader.min.js"
