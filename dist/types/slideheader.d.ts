@@ -19,19 +19,26 @@ export default class SlideHeader {
      * @param element
      * @param options
      */
-    constructor(element: string, options: SH.Option);
+    constructor(element: string, options?: SH.Option);
     /**
-     * ブラウザをスクロールした時に呼び出される処理
+     * ヘッダーバーのアニメーションを制御する
      * @param top
      * @param slideType
      */
-    handleScroll(slideType: SH.SlideType, top: number | string): void;
+    controlHeaderAnimations(slideType: SH.SlideType, top: number | string): void;
+    /**
+     * ブラウザをスクロールした時に呼び出される処理
+     * @param currentScrollTop
+     * @param startingScrollTop
+     * @param slideType
+     */
+    handleScroll(currentScrollTop: number, startingScrollTop: number, slideType: SH.SlideType): void;
     /**
      * scrollイベントを監視する
      * @param slideType1
      * @param slideType2
      */
-    listenScorll(slideType1: SH.SlideType, slideType2: SH.SlideType): void;
+    listenScroll(slideType1: SH.SlideType, slideType2: SH.SlideType): void;
     /**
      * ヘッダーバーのアニメーションが終わった時に呼び出される処理
      * @param slideType
@@ -63,8 +70,14 @@ export default class SlideHeader {
      */
     applyHeader2Styles(): void;
     /**
+     * オプションをマージする
+     * @param defaults
+     * @param options
+     */
+    mergeOptions(defaults: SH.Option, options: SH.Option): SH.Option;
+    /**
      * インスタンスを初期化する
      * @param type
      */
-    init(type: SH.MethodType): void;
+    init(type: string): void;
 }
