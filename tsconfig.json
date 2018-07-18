@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "./dist",
+    "sourceMap": false,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "target": "es5"
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*.ts"]
+}
