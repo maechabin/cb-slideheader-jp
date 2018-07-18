@@ -44,7 +44,7 @@ var SlideHeader = /** @class */ (function () {
     Object.defineProperty(SlideHeader.prototype, "isHeadroom", {
         /** headroomオプジョンが有効かどうか */
         get: function () {
-            if (this.config.headroom === undefined) {
+            if (this.config.headroom === undefined || this.config.headroom === null) {
                 return false;
             }
             return this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_UP && this.config.headroom;
@@ -53,51 +53,60 @@ var SlideHeader = /** @class */ (function () {
         configurable: true
     });
     /**
-     * ブラウザをスクロールした時に呼び出される処理
+     * ヘッダーバーのアニメーションを制御する
      * @param top
      * @param slideType
      */
-    SlideHeader.prototype.handleScroll = function (slideType, top) {
-        var _this = this;
+    SlideHeader.prototype.controlHeaderAnimations = function (slideType, top) {
         var slideDuration = this.config["slide" + slideType + "Duration"];
         var slideTiming = this.config["slide" + slideType + "Timing"];
-        var frameId = 0;
-        cancelAnimationFrame(frameId);
-        frameId = requestAnimationFrame(function () {
-            _this.element.style.transition = "transform " + slideDuration + " " + slideTiming;
-            _this.element.style.transform = "translate3d(0, " + top + ", 0)";
-        });
+        this.element.style.transition = "transform " + slideDuration + " " + slideTiming;
+        this.element.style.transform = "translate3d(0, " + top + ", 0)";
         this.slideDirection = this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.UP ? slideheader_model_1.SlideHeaderModel.SlideType.DOWN : slideheader_model_1.SlideHeaderModel.SlideType.UP;
+    };
+    /**
+     * ブラウザをスクロールした時に呼び出される処理
+     * @param currentScrollTop
+     * @param startingScrollTop
+     * @param slideType
+     */
+    SlideHeader.prototype.handleScroll = function (currentScrollTop, startingScrollTop, slideType) {
+        if (this.config.slidePoint === undefined || this.config.slidePoint === null) {
+            throw new Error('slidePoint must not to be undefined.');
+        }
+        var top1 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? 0 : "-" + this.config.headerBarHeight + "px";
+        var top2 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? "-" + this.config.headerBarHeight + "px" : 0;
+        if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
+            if (this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.UP) {
+                this.controlHeaderAnimations(slideType, top1);
+            }
+        }
+        else {
+            if (this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.DOWN) {
+                this.controlHeaderAnimations(slideType, top2);
+            }
+        }
     };
     /**
      * scrollイベントを監視する
      * @param slideType1
      * @param slideType2
      */
-    SlideHeader.prototype.listenScorll = function (slideType1, slideType2) {
+    SlideHeader.prototype.listenScroll = function (slideType1, slideType2) {
         var _this = this;
-        var top1 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? 0 : "-" + this.config.headerBarHeight + "px";
-        var top2 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? "-" + this.config.headerBarHeight + "px" : 0;
         var startingScrollTop = 0; // スライドの開始位置
         var currentScrollTop = 0; // 現在のスクロールの位置
         window.addEventListener('scroll', function () {
-            if (!_this.config.slidePoint) {
-                throw new Error('slidePoint must not to be undefined.');
-            }
-            currentScrollTop = window.scrollY;
-            if (currentScrollTop > _this.config.slidePoint && currentScrollTop > startingScrollTop) {
-                if (_this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.UP) {
-                    _this.handleScroll(slideType1, top1);
+            var frameId = 0;
+            cancelAnimationFrame(frameId);
+            frameId = requestAnimationFrame(function () {
+                currentScrollTop = window.scrollY;
+                var slideType = _this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.UP ? slideType1 : slideType2;
+                _this.handleScroll(currentScrollTop, startingScrollTop, slideType);
+                if (_this.isHeadroom) {
+                    startingScrollTop = currentScrollTop;
                 }
-            }
-            else {
-                if (_this.slideDirection === slideheader_model_1.SlideHeaderModel.SlideType.DOWN) {
-                    _this.handleScroll(slideType2, top2);
-                }
-            }
-            if (_this.isHeadroom) {
-                startingScrollTop = currentScrollTop;
-            }
+            });
         }, false);
     };
     /**
@@ -106,8 +115,10 @@ var SlideHeader = /** @class */ (function () {
      * @param style
      */
     SlideHeader.prototype.handleTransitionend = function (slideType, style) {
-        this.config["slide" + slideType + "Callback"];
         this.element.style.boxShadow = style;
+        if (typeof this.config["slide" + slideType + "Callback"] === 'function') {
+            this.config["slide" + slideType + "Callback"]();
+        }
     };
     /**
      * TransitionEndイベントを監視する
@@ -132,7 +143,7 @@ var SlideHeader = /** @class */ (function () {
     SlideHeader.prototype.excuteSlideHeader = function () {
         var slideType1 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? slideheader_model_1.SlideHeaderModel.SlideType.DOWN : slideheader_model_1.SlideHeaderModel.SlideType.UP;
         var slideType2 = this.methodType === slideheader_model_1.SlideHeaderModel.MethodType.SLIDE_DOWN ? slideheader_model_1.SlideHeaderModel.SlideType.UP : slideheader_model_1.SlideHeaderModel.SlideType.DOWN;
-        this.listenScorll(slideType1, slideType2);
+        this.listenScroll(slideType1, slideType2);
         this.listenTransitionEnd(slideType1, slideType2);
     };
     /**
@@ -188,6 +199,14 @@ var SlideHeader = /** @class */ (function () {
         }
     };
     /**
+     * オプションをマージする
+     * @param defaults
+     * @param options
+     */
+    SlideHeader.prototype.mergeOptions = function (defaults, options) {
+        return Object.assign({}, defaults, options);
+    };
+    /**
      * インスタンスを初期化する
      * @param type
      */
@@ -196,7 +215,7 @@ var SlideHeader = /** @class */ (function () {
             throw new Error('type does not found and is not type of MethodType.');
         }
         this.methodType = type;
-        this.config = Object.assign({}, this.defaults, this.options);
+        this.config = this.mergeOptions(this.defaults, this.options);
         if (this.config.cloneHeader) {
             this.cloneHeader();
         }
