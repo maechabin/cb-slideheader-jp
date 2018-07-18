@@ -60,22 +60,43 @@ export default class SlideHeader {
   }
 
   /**
-   * ブラウザをスクロールした時に呼び出される処理
+   * ヘッダーバーのアニメーションを制御する
    * @param top
    * @param slideType
    */
-  handleScroll(slideType: SH.SlideType, top: number | string): void {
+  controlHeaderAnimations(slideType: SH.SlideType, top: number | string): void {
     const slideDuration = this.config[`slide${slideType}Duration`];
     const slideTiming = this.config[`slide${slideType}Timing`];
 
-    let frameId: number = 0;
-    cancelAnimationFrame(frameId);
-    frameId = requestAnimationFrame(() => {
-      this.element.style.transition = `transform ${slideDuration} ${slideTiming}`;
-      this.element.style.transform = `translate3d(0, ${top}, 0)`;
-    });
+    this.element.style.transition = `transform ${slideDuration} ${slideTiming}`;
+    this.element.style.transform = `translate3d(0, ${top}, 0)`;
 
     this.slideDirection = this.slideDirection === SH.SlideType.UP ? SH.SlideType.DOWN : SH.SlideType.UP;
+  }
+
+  /**
+   * ブラウザをスクロールした時に呼び出される処理
+   * @param currentScrollTop
+   * @param startingScrollTop
+   * @param slideType
+   */
+  handleScroll(currentScrollTop: number, startingScrollTop: number, slideType: SH.SlideType) {
+    if (this.config.slidePoint === undefined || this.config.slidePoint === null) {
+      throw new Error('slidePoint must not to be undefined.');
+    }
+
+    const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
+    const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
+
+    if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
+      if (this.slideDirection === SH.SlideType.UP) {
+        this.controlHeaderAnimations(slideType, top1);
+      }
+    } else {
+      if (this.slideDirection === SH.SlideType.DOWN) {
+        this.controlHeaderAnimations(slideType, top2);
+      }
+    }
   }
 
   /**
@@ -84,32 +105,23 @@ export default class SlideHeader {
    * @param slideType2
    */
   listenScroll(slideType1: SH.SlideType, slideType2: SH.SlideType): void {
-    const top1 = this.methodType === SH.MethodType.SLIDE_DOWN ? 0 : `-${this.config.headerBarHeight}px`;
-    const top2 = this.methodType === SH.MethodType.SLIDE_DOWN ? `-${this.config.headerBarHeight}px` : 0;
     let startingScrollTop: number = 0; // スライドの開始位置
     let currentScrollTop: number = 0; // 現在のスクロールの位置
 
     window.addEventListener(
       'scroll',
       () => {
-        if (this.config.slidePoint === undefined || this.config.slidePoint === null) {
-          throw new Error('slidePoint must not to be undefined.');
-        }
+        let frameId: number = 0;
+        cancelAnimationFrame(frameId);
+        frameId = requestAnimationFrame(() => {
+          currentScrollTop = window.scrollY;
+          const slideType = this.slideDirection === SH.SlideType.UP ? slideType1 : slideType2;
+          this.handleScroll(currentScrollTop, startingScrollTop, slideType);
 
-        currentScrollTop = window.scrollY;
-
-        if (currentScrollTop > this.config.slidePoint && currentScrollTop > startingScrollTop) {
-          if (this.slideDirection === SH.SlideType.UP) {
-            this.handleScroll(slideType1, top1);
+          if (this.isHeadroom) {
+            startingScrollTop = currentScrollTop;
           }
-        } else {
-          if (this.slideDirection === SH.SlideType.DOWN) {
-            this.handleScroll(slideType2, top2);
-          }
-        }
-        if (this.isHeadroom) {
-          startingScrollTop = currentScrollTop;
-        }
+        });
       },
       false,
     );
