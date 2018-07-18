@@ -6,7 +6,7 @@ describe('slideheader', () => {
 
   beforeEach(() => {
     document.body.innerHTML = `
-      <header class="cb-header"></header>
+      <header class="header"></header>
       <div class="cb-header2"></div>
       <div style="height: 1000px"></div>
     `;
@@ -14,9 +14,9 @@ describe('slideheader', () => {
 
   describe('constructor', () => {
     it('should work with one argument', () => {
-      const expected = document.querySelector('.cb-header');
+      const expected = document.querySelector('.header');
 
-      slideheader = new SlideHeader('.cb-header');
+      slideheader = new SlideHeader('.header');
 
       expect(slideheader).toBeDefined();
       expect(slideheader.element).toEqual(expected);
@@ -27,7 +27,7 @@ describe('slideheader', () => {
         headroom: false,
       };
 
-      slideheader = new SlideHeader('.cb-header', expected);
+      slideheader = new SlideHeader('.header', expected);
 
       expect(slideheader).toBeDefined();
       expect(slideheader.options).toEqual(expected);
@@ -47,7 +47,7 @@ describe('slideheader', () => {
   describe('init', () => {
     describe('no any options', () => {
       beforeEach(() => {
-        slideheader = new SlideHeader('.cb-header');
+        slideheader = new SlideHeader('.header');
       });
 
       it('methodType', () => {
@@ -69,10 +69,10 @@ describe('slideheader', () => {
 
       it('should call a mergeOptions method', () => {
         const spy = jest.spyOn(slideheader, 'mergeOptions');
-        slideheader.defaults = { TEST: 'AAA' } as any;
-        slideheader.options = { TEST: 'BBB' } as any;
+        const defaults = slideheader.defaults;
+        const options = slideheader.options;
         slideheader.init('slideUp');
-        expect(spy).toHaveBeenCalledWith(slideheader.defaults, slideheader.options);
+        expect(spy).toHaveBeenCalledWith(defaults, options);
       });
 
       it('should not call a cloneHeader method', () => {
@@ -88,7 +88,7 @@ describe('slideheader', () => {
       });
 
       it('fail', () => {
-        slideheader = new SlideHeader('.cb-header');
+        slideheader = new SlideHeader('.header');
         try {
           slideheader.init('XXX');
         } catch (error) {
@@ -99,7 +99,7 @@ describe('slideheader', () => {
 
     describe('options', () => {
       it('sholud call cloneHeader', () => {
-        slideheader = new SlideHeader('.cb-header', {
+        slideheader = new SlideHeader('.header', {
           cloneHeader: true,
         });
         const spy = jest.spyOn(slideheader, 'cloneHeader');
@@ -108,7 +108,7 @@ describe('slideheader', () => {
       });
 
       it('should call applyHeader2Styles', () => {
-        slideheader = new SlideHeader('.cb-header', {
+        slideheader = new SlideHeader('.header', {
           fullscreenView: true,
         });
         const spy = jest.spyOn(slideheader, 'applyHeader2Styles');
@@ -117,7 +117,7 @@ describe('slideheader', () => {
       });
 
       it('should merge ', () => {
-        slideheader = new SlideHeader('.cb-header', {
+        slideheader = new SlideHeader('.header', {
           headerBarWidth: '123px',
           zIndex: 123,
           slidePoint: 123,
@@ -132,7 +132,7 @@ describe('slideheader', () => {
 
   describe('isHeadroom', () => {
     it('true', () => {
-      slideheader = new SlideHeader('.cb-header', {
+      slideheader = new SlideHeader('.header', {
         headroom: true,
       });
       slideheader.init('slideUp');
@@ -140,7 +140,7 @@ describe('slideheader', () => {
     });
 
     it('false: slideDown && headroom true', () => {
-      slideheader = new SlideHeader('.cb-header', {
+      slideheader = new SlideHeader('.header', {
         headroom: true,
       });
       slideheader.init('slideDown');
@@ -148,7 +148,7 @@ describe('slideheader', () => {
     });
 
     it('false: slideUp && headroom false', () => {
-      slideheader = new SlideHeader('.cb-header', {
+      slideheader = new SlideHeader('.header', {
         headroom: false,
       });
       slideheader.init('slideDown');
@@ -158,7 +158,7 @@ describe('slideheader', () => {
 
   describe('excuteSlideHeader', () => {
     beforeEach(() => {
-      slideheader = new SlideHeader('.cb-header');
+      slideheader = new SlideHeader('.header');
     });
 
     it('meshodType is SLIDE_DOWN', () => {
@@ -189,19 +189,19 @@ describe('slideheader', () => {
   });
 
   it('mergeOptions', () => {
-    slideheader = new SlideHeader('.cb-header');
+    slideheader = new SlideHeader('.header');
     slideheader.init('slideUp');
-    const defaultsDummy = { TEST: 'AAA' };
-    const optionsDummy = { TEST: 'bbb' };
+    const defaultsDummy = { TEST: 'AAA' } as any;
+    const optionsDummy = { TEST: 'bbb' } as any;
     const expectedConfig = (<any>Object).assign({}, defaultsDummy, optionsDummy);
 
-    slideheader.mergeOptions(defaultsDummy, optionsDummy);
+    const recievedConfig = slideheader.mergeOptions(defaultsDummy, optionsDummy);
 
-    expect(slideheader.config).toEqual(expectedConfig);
+    expect(recievedConfig).toEqual(expectedConfig);
   });
 
   it('applyDefaultHeaderStyles', () => {
-    slideheader = new SlideHeader('.cb-header', {
+    slideheader = new SlideHeader('.header', {
       opacity: 0.3,
       headerBarWidth: '50%',
       zIndex: 123,
@@ -218,47 +218,105 @@ describe('slideheader', () => {
     expect(style.zIndex).toBe('123');
   });
 
-  it('handleScroll', done => {
-    slideheader = new SlideHeader('.cb-header');
+  it('controlHeaderAnimations', () => {
+    slideheader = new SlideHeader('.header');
     slideheader.init('slideUp');
     slideheader.slideDirection = SH.SlideType.UP;
 
-    slideheader.handleScroll(SH.SlideType.UP, 123);
+    slideheader.controlHeaderAnimations(SH.SlideType.UP, 123);
 
     const style = slideheader.element.style;
     const expectedSlideDuration = slideheader.config[`slide${SH.SlideType.UP}Duration`];
     const expectedSlideTiming = slideheader.config[`slide${SH.SlideType.UP}Timing`];
-    window.requestAnimationFrame(() => {
-      expect(style.transition).toBe(`transform ${expectedSlideDuration} ${expectedSlideTiming}`);
-      expect(style.transform).toBe('translate3d(0, 123, 0)');
-      done();
-    });
+
+    expect(style.transition).toBe(`transform ${expectedSlideDuration} ${expectedSlideTiming}`);
+    expect(style.transform).toBe('translate3d(0, 123, 0)');
     expect(slideheader.slideDirection).toBe(SH.SlideType.DOWN);
   });
 
-  /**
-   * jsdomがwindow.scrollToに対応するまで保留
-   */
-  xdescribe('listenScroll', () => {
+  describe('handleScroll', () => {
     beforeEach(() => {
-      window.scrollTo(0, 0);
+      slideheader = new SlideHeader('.header');
+      slideheader.init('slideUp');
     });
 
-    it('should work', () => {
-      slideheader = new SlideHeader('.cb-header');
-      slideheader.init('slideUp');
-      const spy = jest.spyOn(slideheader, 'handleScroll');
+    describe('current > slidePoint && current > start', () => {
+      it('slideDirection === SH.SlideType.UP', () => {
+        slideheader.config.slidePoin = 0;
+        slideheader.slideDirection = SH.SlideType.UP;
+        slideheader.config.headerBarHeight = 10;
+        const spy = jest.spyOn(slideheader, 'controlHeaderAnimations');
+        const currentScrollTop = 100;
+        const startingScrollTop = 10;
+        const slideType = SH.SlideType.UP;
+        const expectedHeaderBarHeight = `-${slideheader.config.headerBarHeight}px`;
 
-      slideheader.listenScroll(SH.SlideType.UP, SH.SlideType.DOWN);
-      window.dispatchEvent(new Event('scroll'));
-      window.scrollTo(0, 100);
+        slideheader.handleScroll(currentScrollTop, startingScrollTop, slideType);
 
+        expect(spy).toHaveBeenCalledWith(slideType, expectedHeaderBarHeight);
+      });
+
+      it('slideDirection === SH.SlideType.DOWN', () => {
+        slideheader.config.slidePoin = 0;
+        slideheader.slideDirection = SH.SlideType.DOWN;
+        const spy = jest.spyOn(slideheader, 'controlHeaderAnimations');
+        const currentScrollTop = 100;
+        const startingScrollTop = 10;
+        const slideType = SH.SlideType.UP;
+
+        slideheader.handleScroll(currentScrollTop, startingScrollTop, slideType);
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('current > slidePoint && current < start', () => {
+      it('slideDirection === SH.SlideType.UP', () => {
+        slideheader.config.slidePoin = 0;
+        slideheader.slideDirection = SH.SlideType.UP;
+        const spy = jest.spyOn(slideheader, 'controlHeaderAnimations');
+        const currentScrollTop = 100;
+        const startingScrollTop = 200;
+        const slideType = SH.SlideType.UP;
+
+        slideheader.handleScroll(currentScrollTop, startingScrollTop, slideType);
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('slideDirection === SH.SlideType.DOWN', () => {
+        slideheader.config.slidePoin = 0;
+        slideheader.slideDirection = SH.SlideType.DOWN;
+        slideheader.config.headerBarHeight = 10;
+        const spy = jest.spyOn(slideheader, 'controlHeaderAnimations');
+        const currentScrollTop = 100;
+        const startingScrollTop = 200;
+        const slideType = SH.SlideType.UP;
+        const expectedHeaderBarHeight = 0;
+
+        slideheader.handleScroll(currentScrollTop, startingScrollTop, slideType);
+
+        expect(spy).toHaveBeenCalledWith(slideType, expectedHeaderBarHeight);
+      });
+    });
+  });
+
+  it('listenScroll', done => {
+    slideheader = new SlideHeader('.header');
+    slideheader.init('slideUp');
+    const spy = jest.spyOn(slideheader, 'handleScroll');
+
+    slideheader.listenScroll(SH.SlideType.UP, SH.SlideType.DOWN);
+    window.dispatchEvent(new Event('scroll'));
+
+    window.requestAnimationFrame(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
 
   it('handleTransitionend', () => {
-    slideheader = new SlideHeader('.cb-header', {
+    slideheader = new SlideHeader('.header', {
       slideUpCallback: () => 'aaa',
     });
     slideheader.init('slideUp');
@@ -273,7 +331,7 @@ describe('slideheader', () => {
 
   describe('listenTransitionEnd', () => {
     beforeEach(() => {
-      slideheader = new SlideHeader('.cb-header');
+      slideheader = new SlideHeader('.header');
     });
 
     it('slideDown && slideDirection is Up', () => {
@@ -322,6 +380,53 @@ describe('slideheader', () => {
       window.dispatchEvent(new Event('transitionend'));
 
       expect(spy).toHaveBeenCalledWith(SH.SlideType.DOWN, 'AAA');
+    });
+  });
+
+  it('cloneHeader', () => {
+    slideheader = new SlideHeader('.header');
+    slideheader.init('slideUp');
+    slideheader.cloneHeader();
+
+    const clonedElement = slideheader.element.nextElementSibling as HTMLElement;
+    expect(clonedElement.getAttribute('class')).not.toBe('header');
+    expect(clonedElement.getAttribute('class')).toBe('cb-header1');
+    expect(clonedElement.style.zIndex).toBe('10000');
+  });
+
+  describe('applyHeader2Styles', () => {
+    let header2: HTMLElement;
+
+    beforeEach(() => {
+      header2 = document.querySelector('.cb-header2') as HTMLElement;
+      Object.defineProperty(header2, 'clientHeight', {
+        value: 100,
+        writable: false,
+      });
+      Object.defineProperty(window, 'outerHeight', {
+        value: 500,
+        writable: true,
+      });
+
+      slideheader = new SlideHeader('.header', {
+        fullscreenView: true,
+        cloneHeader: true,
+      });
+      slideheader.init('slideUp');
+    });
+
+    it('windowHeight > headerHeight', () => {
+      Object.defineProperty(slideheader.element, 'clientHeight', {
+        value: 100,
+        writable: false,
+      });
+      const expectedPadding = (500 - 200 + 100) / 2;
+
+      slideheader.applyDefaultHeaderStyles();
+
+      expect(header2.style.paddingTop).toBe(`${expectedPadding}px`);
+      expect(header2.style.paddingBottom).toBe(`${expectedPadding}px`);
+      expect(slideheader.config.slidePoint).toBe(500);
     });
   });
 });

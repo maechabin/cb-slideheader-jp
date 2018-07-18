@@ -70,7 +70,6 @@ export default class SlideHeader {
 
     this.element.style.transition = `transform ${slideDuration} ${slideTiming}`;
     this.element.style.transform = `translate3d(0, ${top}, 0)`;
-
     this.slideDirection = this.slideDirection === SH.SlideType.UP ? SH.SlideType.DOWN : SH.SlideType.UP;
   }
 
@@ -235,8 +234,8 @@ export default class SlideHeader {
    * @param defaults
    * @param options
    */
-  mergeOptions(defaults: SH.Option, options: SH.Option) {
-    this.config = (<SH.Option>Object).assign({}, defaults, options);
+  mergeOptions(defaults: SH.Option, options: SH.Option): SH.Option {
+    return (<SH.Option>Object).assign({}, defaults, options);
   }
 
   /**
@@ -249,7 +248,7 @@ export default class SlideHeader {
     }
 
     this.methodType = type;
-    this.mergeOptions(this.defaults, this.options);
+    this.config = this.mergeOptions(this.defaults, this.options);
     if (this.config.cloneHeader) {
       this.cloneHeader();
     }
